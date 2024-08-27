@@ -9,6 +9,7 @@ import NoAuthAPI from './api/NoAuthAPI'
 import PageAPI from './api/PageAPI'
 import PageHistoryAPI from './api/PageHistoryAPI'
 import SearchAPI from './api/SearchAPI'
+import WikiAPI from './api/WikiAPI'
 
 GetDatabaseConnection()
 
@@ -39,6 +40,7 @@ UserAPI(app, BASEURL + '/user')
 PageAPI(app, BASEURL + '/page')
 PageHistoryAPI(app, BASEURL + '/page/history')
 SearchAPI(app, BASEURL)
+WikiAPI(app, BASEURL + '/wiki')
 
 app.get('*', (_, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'client', 'dist', 'index.html'))
