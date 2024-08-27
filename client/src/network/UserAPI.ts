@@ -13,6 +13,9 @@ async function logout(onSuccess: (arg0: User) => void, onError: (arg0: string) =
 async function byId(id: string, onSuccess: (arg0: User) => void, onError: (arg0: string) => void) {
 	get<User>('/user/'+ id, onSuccess, onError)
 }
+async function search(query: string, onSuccess: (arg0: User[]) => void, onError: (arg0: string) => void) {
+	get<User[]>('/user/search/'+ query, onSuccess, onError)
+}
 async function changePassword(newPassword: string, onSuccess: (arg0: User) => void, onError: (arg0: string) => void) {
 	put<User>({password: newPassword}, '/user/changePassword', onSuccess, onError)
 }
@@ -25,6 +28,7 @@ const UserAPI = {
 	login,
 	logout,
 	byId,
+	search,
 	changePassword,
 	updateUser
 }
