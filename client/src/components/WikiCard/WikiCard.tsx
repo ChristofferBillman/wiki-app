@@ -1,4 +1,3 @@
-import CSSStyle from './wikiCard.module.css'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -57,5 +56,5 @@ interface CardImageProps {
 }
 
 function CardImage({src}: CardImageProps) {
-	return <img alt='img' className={CSSStyle.image} src={src}/>
+	return <img alt='img' src={src}/>
 }
