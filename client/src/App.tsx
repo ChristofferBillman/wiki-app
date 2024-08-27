@@ -9,7 +9,7 @@ import Navbar from './components/Navbar'
 import ScrollToTop from './components/common/ScrollTopTop'
 
 // Pages
-import Home from './pages/Home'
+import Home from './pages/Home.tsx'
 import Page from './pages/Page/Page.tsx'
 import PageEditor from './pages/PageEditor/PageEditor.tsx'
 import PageCreator from './pages/PageCreator/PageCreator.tsx'
@@ -23,6 +23,9 @@ import { ThemeContextProvider } from './contexts/ThemeContext.tsx'
 import Settings from './pages/Settings.tsx'
 import ChangePassword from './pages/ChangePassword.tsx'
 import ChangeUsername from './pages/ChangeUsername.tsx'
+import WikiHome from './pages/WikiHome.tsx'
+import Landing from './pages/Landing.tsx'
+import WikiCreator from './pages/WikiCreator.tsx'
 
 export default function App() {
 	return (
@@ -32,18 +35,22 @@ export default function App() {
 					<ToastContextProvider>
 						<ScrollToTop />
 						<Routes>
+							<Route path='/' element={<Landing/>}/>
+							<Route path='/home' element={<Home/>}/>
+							<Route path='/wiki/create' element={<WikiCreator/>}/>
+
+							<Route path='/settings' element={<Settings />}/>
+							<Route path='settings/changePassword' element={<ChangePassword/>}/>
+							<Route path='settings/changeUsername' element={<ChangeUsername/>}/>
+
 							<Route element={<Navbar/>}>
-								<Route path='/' element={<Home/>}/>
+								<Route path='/wiki/:name' element={<WikiHome/>}/>
 
-								<Route path='/settings' element={<Settings />}/>
-								<Route path='settings/changePassword' element={<ChangePassword/>}/>
-								<Route path='settings/changeUsername' element={<ChangeUsername/>}/>
-
-								<Route path='/page/:id' element={<Page/>}/>
-								<Route path='/page/edit/:id' element={<PageEditor/>}/>
-								<Route path='/page/create' element={<PageCreator/>}/>
-								<Route path="/page/history/:id" element={<PageHistory />} />
-								<Route path="/page/history/:id/:version" element={<HistoricalPage />} />
+								<Route path='/wiki/:name/page/:id' element={<Page/>}/>
+								<Route path='/wiki/:name/page/:id/edit' element={<PageEditor/>}/>
+								<Route path='/wiki/:name/page/create' element={<PageCreator/>}/>
+								<Route path="/wiki/:name/page/:id/history" element={<PageHistory />} />
+								<Route path="/wiki/:name/page/:id/history/:version" element={<HistoricalPage />} />
 							</Route>
 							<Route index path='/login' element={<Login/>}/>
 							<Route path='/signup' element={<Signup/>}/>

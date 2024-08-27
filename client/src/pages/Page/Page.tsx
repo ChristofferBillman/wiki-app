@@ -1,5 +1,5 @@
 // External dependencies
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 // Internal dependencies
 import { Column, Row } from '../../components/common/Layout'
@@ -32,6 +32,7 @@ export default function Page() {
 	const [modalVisible, setModalVisibility] = useState(false)
 
 	const navigate = useNavigate()
+	const location = useLocation()
 
 	useEffect(() => {
 		PageAPI.byId(id,
@@ -92,7 +93,7 @@ export default function Page() {
 					<Button
 						outline
 						text='Edit'
-						onClick={() => navigate('/page/edit/' + id)}
+						onClick={() => navigate(location.pathname + '/edit')}
 						icon={<Pencil color='var(--black)' />}
 						loading={loading}
 					/>
@@ -107,7 +108,7 @@ export default function Page() {
 						outline
 						text='History'
 						icon={<History color='var(--black)' />}
-						onClick={() => navigate('/page/history/' + id)}
+						onClick={() => navigate(location.pathname + '/history')}
 						loading={loading}
 					/>
 				</Row>

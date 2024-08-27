@@ -1,6 +1,6 @@
 import CSSStyle from './PageCard.module.css'
 
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import Page from '../../types/Page'
 import Card from '../common/Card'
@@ -15,13 +15,14 @@ interface Props {
 export function PageCard({page}: Props) {
 
 	const navigate = useNavigate()
+	const location = useLocation()
 
 	const {title, description} = useMemo(() => getTitleAndDescription(page), [page])
 
 	return (
 		<Card
 			style={{width: '400px', maxWidth: '600px'}}
-			onClick={() => navigate('/page/' + page._id)}
+			onClick={() => navigate(location.pathname + '/page/' + page._id)}
 		>
 			<CardImage src={getImage(page)}/>
 			<Column>

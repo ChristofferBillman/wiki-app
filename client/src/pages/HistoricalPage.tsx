@@ -84,7 +84,7 @@ export default function HistoricalPage() {
 					outline
 					text='Back to History'
 					icon={<History color='var(--black)' />}
-					onClick={() => navigate('/page/history/' + id)}
+					onClick={() => navigate(-1)}
 				/>
 			</Row>
 

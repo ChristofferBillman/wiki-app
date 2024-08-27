@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import { Plus, Cogwheel, Cross, Reorder } from '../../assets/Icons'
 import Button from '../common/Button'
@@ -11,6 +11,7 @@ import { useState } from 'react'
 export function Navbar() {
 
 	const navigate = useNavigate()
+	const location = useLocation()
 
 	const [menuOpen, setMenuOpen] = useState(false)
 
@@ -48,7 +49,7 @@ export function Navbar() {
 						icon={<Plus/>}
 						onClick={() => {
 							setMenuOpen(false)
-							navigate('/page/create')
+							navigate(location.pathname + '/page/create')
 						}}
 					/>
 					<Button

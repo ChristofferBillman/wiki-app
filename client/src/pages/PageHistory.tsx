@@ -1,5 +1,5 @@
 // External dependencies
-import {useNavigate, useParams} from 'react-router-dom'
+import {useLocation, useNavigate, useParams} from 'react-router-dom'
 
 // Internal dependencies
 import {Column, Filler, Row} from '../components/common/Layout'
@@ -49,7 +49,7 @@ export default function PageHistory() {
 				<Button
 					outline
 					text='Back to Page'
-					onClick={() => navigate('/page/' + id)}
+					onClick={() => navigate(-1)}
 				/>
 			</Row>
 
@@ -70,6 +70,7 @@ function PageRecordListItem({record}: EditListItemProps): JSX.Element {
 
 	const [user, setUser] = useState('')
 	const navigate = useNavigate()
+	const location = useLocation()
 
 	useEffect(() => {
 		UserAPI.byId(record.author,
@@ -85,7 +86,7 @@ function PageRecordListItem({record}: EditListItemProps): JSX.Element {
 				text='View this version'
 				outline
 				icon={<History color={'var(--black)'}/>}
-				onClick={() => navigate('/page/history/' + record.page._id + '/' + record.versionNumber)}
+				onClick={() => navigate(location.pathname + '/' + record.versionNumber)}
 			/>
 		</Row>
 	)
