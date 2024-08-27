@@ -23,7 +23,7 @@ export default function Login() {
 		UserAPI.login(name, password,
 			user => {
 				setUser(user)
-				navigate('/')
+				navigate('/home')
 			},
 			err => toast(err, 'error'))
 	}
@@ -31,10 +31,9 @@ export default function Login() {
 	return (
 		<Row className='fillAvailable' style={{ alignItems: 'center', justifyContent: 'center'}}>
 			<Card style={{ width: '300px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-				<div>
-					<h1 style={{ margin: 0 }}>stocken.wiki</h1>
-					<h2>Sign in</h2>
-				</div>
+
+				<h1 style={{ margin: 0 }}>Log in</h1>
+				
 				<Input
 					placeholder='Name'
 					name='name'

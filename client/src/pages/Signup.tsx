@@ -22,7 +22,7 @@ export default function Signup() {
 		UserAPI.signup(name,password,
 			user => {
 				setUser(user)
-				navigate('/')
+				navigate('/home')
 			},
 			err => toast(err, 'error'))
 	}
@@ -30,10 +30,8 @@ export default function Signup() {
 	return (
 		<Row className='fillAvailable' style={{ alignItems: 'center', justifyContent: 'center'}}>
 			<Card style={{ width: '300px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-				<div>
-					<h1 style={{ margin: 0 }}>stocken.wiki</h1>
-					<h2>Sign up</h2>
-				</div>
+				
+				<h1 style={{ margin: 0 }}>Sign up</h1>
 
 				<Input
 					placeholder='Name'
