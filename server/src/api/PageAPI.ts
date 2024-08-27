@@ -1,15 +1,25 @@
-import { Request, Response, Application } from 'express'
+import { Application, Request, Response } from 'express'
+import mongoose from "mongoose"
+
 import Page, { IPage } from '../models/Page'
-import PageRecord, { IPageRecord } from "../models/PageRecord";
-import User from "../models/User";
-import mongoose from "mongoose";
+import User, { IUser } from '../models/User'
+import PageRecord from "../models/PageRecord"
 
 export default function PageAPI(app: Application, BASEURL: string) {
 
     // GET
     app.get(BASEURL + '/',  async (req, res) => {
         try {
-            const pages: IPage[] = await Page.find()
+            const { wikiId } = req.query
+            let pages: IPage[]
+
+            if(wikiId) {
+                pages = await Page.find({wiki: wikiId})
+            }
+            else {
+                pages = await Page.find()
+            }
+            
             res.json(pages)
         } catch (error) {
             res.status(500).send('An error occurred' )
@@ -31,8 +41,12 @@ export default function PageAPI(app: Application, BASEURL: string) {
     // POST
     app.post(BASEURL + '/', async (req, res) => {
         try {
-            const { content, infoSection, authors } = req.body
-            console.log(authors)
+            const { content, infoSection, authors, wikiId } = req.body
+            
+            if(!isMemberOfWiki(req, wikiId)) {
+                return res.status(401).send('You cannot create a page in a wiki you are not a member of.')
+            }
+
             addAuthorIfNotPresent(req.userId, authors)
 
             const newPage: IPage = new Page({
@@ -41,7 +55,6 @@ export default function PageAPI(app: Application, BASEURL: string) {
                 authors
             })
 
-            console.log('hi')
             const createdPage: IPage = await newPage.save()
             res.status(201).json(createdPage)
         } catch (error) {
@@ -54,7 +67,11 @@ export default function PageAPI(app: Application, BASEURL: string) {
     app.put(BASEURL + '/:id', async (req, res) => {
         try {
             const pageId = req.params.id
-            const { content, infoSection, authors } = req.body
+            const { content, infoSection, authors, wikiId } = req.body
+
+            if(!isMemberOfWiki(req, wikiId)) {
+                return res.status(401).send('You cannot edit a page in a wiki you are not a member of.')
+            }
 
             addAuthorIfNotPresent(req.userId, authors)
 
@@ -89,6 +106,12 @@ export default function PageAPI(app: Application, BASEURL: string) {
         try {
             const pageId = req.params.id
 
+            const page: IPage = await Page.findById(pageId)
+
+            if(!isMemberOfWiki(req, page.wikiId)) {
+                return res.status(401).send('You cannot delete a page in a wiki you are not a member of.')
+            }
+
             const deletedPage: IPage | null = await Page.findByIdAndDelete(pageId)
 
             if (!deletedPage) {
@@ -106,4 +129,18 @@ function addAuthorIfNotPresent(userId, authors: any) {
     if(!authors.includes(userId)) {
         authors.push(userId)
     }
+}
+
+async function isMemberOfWiki(req: Request, wikiId: string) {
+    const thisUser: IUser | null = await User.findById(req.userId)
+
+    if(!thisUser) {
+        return false
+    }
+
+    if(!thisUser.wikis.includes(wikiId)) {
+        return false
+    }
+
+    return true
 }

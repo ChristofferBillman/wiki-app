@@ -49,6 +49,7 @@ export default function NoAuthAPI(app: Application, BASEURL: string) {
     app.post(BASEURL + '/user', async (req: Request, res: Response) => {
         const name: string = req.body.name
         const password: string = req.body.password
+        const wikis: string[] = []
     
         if(name == undefined || password == undefined) {
             res.status(400)
@@ -75,7 +76,7 @@ export default function NoAuthAPI(app: Application, BASEURL: string) {
         }
         const hash = await PassHash.toHash(password)
     
-        await new User({name, password: hash}).save()
+        await new User({name, wikis, password: hash}).save()
         
         const { user, token } = await Token.Generate(name, password)
 

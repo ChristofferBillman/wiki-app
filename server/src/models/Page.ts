@@ -12,12 +12,14 @@ export interface IPage extends Document {
     content: string
     infoSection: InfoSection
     authors: string[]
+    wikiId: string
 }
 
 const pageSchema: Schema<IPage> = new Schema({
     content: { type: String, required: true },
     infoSection: { type: Object, required: true },
-    authors: [{ type: String, required: true }]
+    authors: [{ type: String, required: true }],
+    wikiId: { type: String, required: true }
 });
 
 export default mongoose.model<IPage>('Page', pageSchema)
