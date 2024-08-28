@@ -8,6 +8,7 @@ export interface PageReducerAction {
 
 export enum PageReducerType {
 	SET_STATE,
+	SET_WIKIID,
 	SET_CONTENT, 
 	SET_INFOSECTION,
 	SET_STATISTIC,
@@ -83,6 +84,12 @@ export default function pageReducer(state: Page, action: PageReducerAction): Pag
 		return {
 			...state,
 			content: payload
+		}
+	}
+	case PageReducerType.SET_WIKIID: {
+		return {
+			...state,
+			wikiId: payload
 		}
 	}
 	case PageReducerType.REORDER_STATISTIC: {

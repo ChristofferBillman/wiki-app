@@ -10,6 +10,10 @@ async function byId(wikiId: string | undefined, onSuccess: (arg0: Wiki) => void,
 	get('/wiki/' + wikiId, onSuccess, onError)
 }
 
+async function byName(wikiName: string, onSuccess: (arg0: Wiki) => void, onError: (arg0: string) => void) {
+	get('/wiki?wikiName=' + wikiName, onSuccess, onError)
+}
+
 async function create(wikiData: Wiki, onSuccess: (arg0: unknown) => void, onError: (arg0: string) => void) {
 	post(wikiData, '/wiki', onSuccess, onError)
 }
@@ -38,6 +42,7 @@ const wikiAPI = {
 	remove,
 	all,
 	byId,
+	byName,
 	addUserToWiki
 }
 

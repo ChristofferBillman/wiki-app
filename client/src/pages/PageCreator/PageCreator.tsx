@@ -1,7 +1,7 @@
 import { useReducer } from 'react'
 
 // External Dependencies
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 // Internal Dependencies
 import { Column, Filler, Row } from '../../components/common/Layout'
@@ -15,9 +15,13 @@ import useToast from '../../contexts/ToastContext'
 import pageReducer, { initalPage } from '../../reducers/PageReducer'
 
 import style from './pageCreatorStyle.module.css'
+import wikiAPI from '../../network/WikiAPI'
 
 export default function PageCreator() {
 	const navigate = useNavigate()
+	const { wikiname } = useParams()
+
+	if(!wikiname) throw new Error('Wiki name not found in pathname.')
 
 	const [page, dispatch] = useReducer(pageReducer, initalPage)
 
@@ -26,12 +30,19 @@ export default function PageCreator() {
 	const title = page.content.split('\n')[0].replace('#','')
 
 	const onSubmit = () => {
-		PageAPI.create(page,
-			() => {
-				toast('Successfully added page', 'success')
-				navigate(-1)
-			},
-			() => toast('Cannot submit empty page.', 'error'))
+		wikiAPI.byName(wikiname, wiki => {
+			const pageWithWikiId = {...page, wikiId: wiki._id}
+
+			PageAPI.create(pageWithWikiId,
+				() => {
+					toast('Successfully added page', 'success')
+					navigate(-1)
+				},
+				() => toast('Cannot submit empty page.', 'error'))
+		},
+		err => {
+			toast(err, 'error')
+		})
 	}
 	
 	return (

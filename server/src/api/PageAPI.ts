@@ -4,17 +4,23 @@ import mongoose from "mongoose"
 import Page, { IPage } from '../models/Page'
 import User, { IUser } from '../models/User'
 import PageRecord from "../models/PageRecord"
+import Wiki, { IWiki } from '../models/Wiki'
 
 export default function PageAPI(app: Application, BASEURL: string) {
 
     // GET
     app.get(BASEURL + '/',  async (req, res) => {
         try {
-            const { wikiId } = req.query
+            const { wikiName } = req.query
             let pages: IPage[]
 
-            if(wikiId) {
-                pages = await Page.find({wiki: wikiId})
+            if(wikiName) {
+                const wiki: IWiki | null = await Wiki.findOne({name: wikiName})
+
+                if(!wiki) {
+                    return res.status(404).send('No wiki with that name was found.')
+                }
+                pages = await Page.find({wikiId: wiki._id})
             }
             else {
                 pages = await Page.find()
@@ -52,7 +58,8 @@ export default function PageAPI(app: Application, BASEURL: string) {
             const newPage: IPage = new Page({
                 content,
                 infoSection,
-                authors
+                authors,
+                wikiId
             })
 
             const createdPage: IPage = await newPage.save()

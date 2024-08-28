@@ -3,10 +3,19 @@ import Wiki, { IWiki } from '../models/Wiki'
 import User, { IUser } from '../models/User'
 
 export default function WikiAPI(app: Application, BASEURL: string) {
-    console.log(BASEURL)
     // GET
     app.get(BASEURL + '/',  async (req, res) => {
         try {
+            const { wikiName } = req.query
+
+            if(wikiName) {
+                const wiki: IWiki | null = await Wiki.findOne({name: wikiName})
+
+                if(!wiki) return res.staus(404).send('Could not find a wiki with that name.')
+
+                return res.json(wiki)
+            }
+
             const wikis: IWiki[] = await Wiki.find()
             res.json(wikis)
         } catch (error) {

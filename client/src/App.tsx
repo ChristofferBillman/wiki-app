@@ -36,7 +36,6 @@ export default function App() {
 						<ScrollToTop />
 						<Routes>
 							<Route path='/' element={<Landing/>}/>
-							<Route path='/home' element={<Home/>}/>
 							<Route path='/wiki/create' element={<WikiCreator/>}/>
 
 							<Route path='/settings' element={<Settings />}/>
@@ -44,13 +43,14 @@ export default function App() {
 							<Route path='settings/changeUsername' element={<ChangeUsername/>}/>
 
 							<Route element={<Navbar/>}>
-								<Route path='/wiki/:name' element={<WikiHome/>}/>
+								<Route path='/home' element={<Home/>}/>
+								<Route path='/wiki/:wikiname' element={<WikiHome/>}/>
 
-								<Route path='/wiki/:name/page/:id' element={<Page/>}/>
-								<Route path='/wiki/:name/page/:id/edit' element={<PageEditor/>}/>
-								<Route path='/wiki/:name/page/create' element={<PageCreator/>}/>
-								<Route path="/wiki/:name/page/:id/history" element={<PageHistory />} />
-								<Route path="/wiki/:name/page/:id/history/:version" element={<HistoricalPage />} />
+								<Route path='/wiki/:wikiname/page/:id' element={<Page/>}/>
+								<Route path='/wiki/:wikiname/page/:id/edit' element={<PageEditor/>}/>
+								<Route path='/wiki/:wikiname/page/create' element={<PageCreator/>}/>
+								<Route path="/wiki/:wikiname/page/:id/history" element={<PageHistory />} />
+								<Route path="/wiki/:wikiname/page/:id/history/:version" element={<HistoricalPage />} />
 							</Route>
 							<Route index path='/login' element={<Login/>}/>
 							<Route path='/signup' element={<Signup/>}/>

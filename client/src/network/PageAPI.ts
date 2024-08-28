@@ -5,6 +5,10 @@ async function all(onSuccess: (arg0: Page[]) => void, onError: (arg0: string) =>
 	get('/page', onSuccess, onError)
 }
 
+async function allFromWiki(wikiName: string, onSuccess: (arg0: Page[]) => void, onError: (arg0: string) => void) {
+	get('/page?wikiName=' + wikiName, onSuccess, onError)
+}
+
 async function byId(pageId: string | undefined, onSuccess: (arg0: Page) => void, onError: (arg0: string) => void) {
 	idGuard(pageId)
 	get('/page/' + pageId, onSuccess, onError)
@@ -33,6 +37,7 @@ const PageAPI = {
 	update,
 	remove,
 	all,
+	allFromWiki,
 	byId
 }
 

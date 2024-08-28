@@ -5,5 +5,5 @@ export default interface IPage {
     content: string
     infoSection: InfoSection
     authors: string[]
-    wikiId: string
+    wikiId?: string
 }
