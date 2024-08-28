@@ -19,7 +19,18 @@ async function upload(filePickerRef: RefObject<HTMLInputElement>, onSuccess: (ar
 		method: 'POST',
 		body: formData,
 	})
-		.then(async res => onSuccess(await res.json()))
+		.then(async res => {
+			if(res.status == 401) {
+				window.location.href = '/#/login'
+				return
+			}
+			if (res.status >= 400) {
+				onError(await res.text())
+			}
+			if (res.status >= 200 && res.status < 300) {
+				onSuccess(await res.json())
+			}
+		})
 		.catch(err => onError(err))
 }
 

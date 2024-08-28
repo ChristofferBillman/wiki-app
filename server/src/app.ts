@@ -18,7 +18,7 @@ const app: Application = express()
 const port = process.env.PORT || 3000
 const BASEURL = '/api'
 
-app.use('/api/uploads', express.static(path.join(__dirname,'..', 'uploads')))
+app.use('/api/uploads', express.static(path.join(__dirname, '..', 'uploads')))
 app.use(express.static(path.join(__dirname, '..', '..', 'client', 'dist')))
 app.use(express.static("public"))
 
