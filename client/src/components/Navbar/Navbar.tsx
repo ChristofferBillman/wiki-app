@@ -1,17 +1,20 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 
-import { Plus, Cogwheel, Cross, Reorder } from '../../assets/Icons'
+import { Plus, Cogwheel, Cross, Reorder, Person } from '../../assets/Icons'
 import Button from '../common/Button'
 import { Filler, Row } from '../common/Layout'
 
 import SearchBar from '../SearchBar'
 import style from './Navbar.module.css'
 import { useState } from 'react'
+import useUser from '../../contexts/UserContext'
 
 export function Navbar() {
 
 	const navigate = useNavigate()
 	const location = useLocation()
+
+	const { user } = useUser()
 
 	const [menuOpen, setMenuOpen] = useState(false)
 
@@ -44,16 +47,27 @@ export function Navbar() {
 						onClick={() => setMenuOpen(!menuOpen)}
 					/>
 					<Button
-						text='New Page'
+						text='New Wiki'
 						color='var(--primary)'
 						icon={<Plus/>}
 						onClick={() => {
 							setMenuOpen(false)
-							navigate(location.pathname + '/page/create')
+							navigate('/wiki/create')
 						}}
 					/>
 					<Button
 						outline
+						text={user.name}
+						textColor='var(--gray)'
+						icon={<Person color='var(--gray)'/>}
+						onClick={() => {
+							setMenuOpen(false)
+							navigate('/home')
+						}}
+					/>
+					<Button
+						outline
+						text='Settings'
 						textColor='var(--gray)'
 						icon={<Cogwheel color='var(--gray)'/>}
 						onClick={() => {
