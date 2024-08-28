@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react'
+import { CSSProperties, ForwardedRef, forwardRef } from 'react'
 import CSSstyle from './Input.module.css'
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 	onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export function Input({placeholder, value, setValue, name, type, style, onFocus, onBlur}: Props) {
+export const Input = forwardRef(function Input({placeholder, value, setValue, name, type, style, onFocus, onBlur}: Props, ref: ForwardedRef<HTMLInputElement>) {
 	return (
 		<input
 			onFocus={onFocus}
@@ -24,6 +24,7 @@ export function Input({placeholder, value, setValue, name, type, style, onFocus,
 			value={value}
 			name={name}
 			onChange={e => setValue(e)}
+			ref={ref}
 		/>
 	)
-}
+})
