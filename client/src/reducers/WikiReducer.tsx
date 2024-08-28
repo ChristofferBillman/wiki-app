@@ -1,4 +1,4 @@
-import Wiki from '../types/wiki'
+import Wiki from '../types/Wiki'
 
 export interface WikiReducerAction {
 	type: WikiReducerType,

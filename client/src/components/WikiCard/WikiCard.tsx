@@ -5,7 +5,7 @@ import Card from '../common/Card'
 import { Column } from '../common/Layout'
 import PlaceholderImg from '../../assets/img/placeholder.jpg'
 
-import Wiki from '../../types/wiki'
+import Wiki from '../../types/Wiki'
 
 interface Props {
     wiki: Wiki

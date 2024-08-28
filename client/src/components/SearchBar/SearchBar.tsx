@@ -9,7 +9,7 @@ import style from './SearchBar.module.css'
 import {Row} from '../common/Layout'
 import useOutsideClick from '../../hooks/useOutsideClick'
 import {SearchResult} from './SearchResult'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import wikiAPI from '../../network/WikiAPI'
 
 export function SearchBar() {

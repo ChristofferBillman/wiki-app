@@ -4,7 +4,7 @@ import { Row } from '../components/common/Layout'
 import Page from '../types/Page'
 import PageAPI from '../network/PageAPI'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import Wiki from '../types/wiki'
+import Wiki from '../types/Wiki'
 import { initalWiki } from '../reducers/WikiReducer'
 import wikiAPI from '../network/WikiAPI'
 

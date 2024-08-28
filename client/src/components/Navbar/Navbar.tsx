@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 import { Plus, Cogwheel, Cross, Reorder, Person } from '../../assets/Icons'
 import Button from '../common/Button'
@@ -12,7 +12,6 @@ import useUser from '../../contexts/UserContext'
 export function Navbar() {
 
 	const navigate = useNavigate()
-	const location = useLocation()
 
 	const { user } = useUser()
 
@@ -22,12 +21,6 @@ export function Navbar() {
 		<>
 			<Row className={style.navbar}>
 				<Row className={style.topBar}>
-					<Link
-						to='/'
-						style={{color: 'var(--black)', textDecoration: 'none'}}
-					>
-						wiki.stocken
-					</Link>
 					<Button
 						outline
 						icon={<Reorder color='var(--gray)'/>}

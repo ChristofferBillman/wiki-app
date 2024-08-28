@@ -1,4 +1,4 @@
-import Wiki from '../types/wiki'
+import Wiki from '../types/Wiki'
 import { post, put, del, get } from './common/http'
 
 async function all(onSuccess: (arg0: Wiki[]) => void, onError: (arg0: string) => void) {

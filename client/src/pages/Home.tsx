@@ -4,15 +4,14 @@ import { Column, Row } from '../components/common/Layout'
 import useUser from '../contexts/UserContext'
 
 import Placeholder from '../assets/img/placeholder.jpg'
-import { useNavigate } from 'react-router-dom'
 import WikiAPI from '../network/WikiAPI'
-import Wiki from '../types/wiki'
+import Wiki from '../types/Wiki'
 import WikiCard from '../components/WikiCard'
 
 export default function Home() {
 
 	const [wikis, setWikis] = useState<Wiki[]>([])
-	const [error, setError] = useState<string>('')
+	const [_, setError] = useState<string>('')
 
 	useEffect(() => {
 		WikiAPI.all(wikis => setWikis(wikis), err => setError(err))
@@ -24,7 +23,7 @@ export default function Home() {
 	return (
 		<>
 
-			<Column>
+			<Column style={{ margin: '0 auto', maxWidth: 'var(--page-max-width)' }}>
 				<h1 style={{color: 'var(--white)'}}>Welcome {username}</h1>
 				<img
 					src={Placeholder}
