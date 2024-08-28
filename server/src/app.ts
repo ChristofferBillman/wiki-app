@@ -10,6 +10,7 @@ import PageAPI from './api/PageAPI'
 import PageHistoryAPI from './api/PageHistoryAPI'
 import SearchAPI from './api/SearchAPI'
 import WikiAPI from './api/WikiAPI'
+import FileAPI from './api/FileAPI'
 
 GetDatabaseConnection()
 
@@ -17,6 +18,7 @@ const app: Application = express()
 const port = process.env.PORT || 3000
 const BASEURL = '/api'
 
+app.use('/api/uploads', express.static(path.join(__dirname,'..', 'uploads')))
 app.use(express.static(path.join(__dirname, '..', '..', 'client', 'dist')))
 app.use(express.static("public"))
 
@@ -41,6 +43,7 @@ PageAPI(app, BASEURL + '/page')
 PageHistoryAPI(app, BASEURL + '/page/history')
 SearchAPI(app, BASEURL)
 WikiAPI(app, BASEURL + '/wiki')
+FileAPI(app, BASEURL)
 
 app.get('*', (_, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'client', 'dist', 'index.html'))

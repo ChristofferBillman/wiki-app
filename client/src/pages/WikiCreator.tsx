@@ -14,6 +14,7 @@ import WikiAPI from '../network/WikiAPI'
 import wikiReducer, { initalWiki, WikiReducerType } from '../reducers/WikiReducer'
 import UserInput from '../components/UserInput'
 import User from '../types/User'
+import ImageUploadButton from '../components/ImageUpload'
 
 export default function WikiCreator() {
 	const navigate = useNavigate()
@@ -31,6 +32,10 @@ export default function WikiCreator() {
 				navigate(-1)
 			},
 			() => toast('Fill in all fields.', 'error'))
+	}
+
+	const handleImgUpload = (filename: string) => {
+		dispatch({type: WikiReducerType.SET_FIELD, payload: {target: {name: 'img', value: filename }}})
 	}
 
 	return (
@@ -51,6 +56,10 @@ export default function WikiCreator() {
 						value={wiki.description}
 						setValue={e => dispatch({type: WikiReducerType.SET_FIELD, payload: e})}
 						name='description'
+					/>
+
+					<ImageUploadButton
+						onImgUploaded={handleImgUpload}
 					/>
 
 					<UserInput
