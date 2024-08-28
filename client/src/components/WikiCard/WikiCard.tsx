@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import Card from '../common/Card'
 import { Column } from '../common/Layout'
 import PlaceholderImg from '../../assets/img/placeholder.jpg'
-import { useMemo } from 'react'
 
 import Wiki from '../../types/wiki'
 
@@ -16,39 +15,27 @@ export function WikiCard({wiki}: Props) {
 
 	const navigate = useNavigate()
 
-	const {title, description} = useMemo(() => getTitleAndDescription(wiki), [wiki])
-
 	return (
 		<Card
 			style={{width: '400px', maxWidth: '600px'}}
-			onClick={() => navigate('/wiki/' + wiki._id)}
+			onClick={() => navigate('/wiki/' + wiki.name)}
 		>
 			<CardImage src={getImage(wiki)}/>
 			<Column>
-				<h4>{title}</h4>
-				<p>{description}</p>
+				<h4>{wiki.name}</h4>
+				<p>{wiki.description}</p>
 			</Column>
 		</Card>
 	)
 }
 
-function getTitleAndDescription(wiki: Wiki): {title: string, description: string} {
-	const markdown = wiki.description
-
-	const lines = markdown.split(/\r?\n/)
-
-	const title = lines[0].replace('#','')
-	const description = lines[1]
-	return {title, description}
-}
-
 function getImage(wiki: Wiki): string {
 	const img = wiki.img
 
-	if(img == undefined) {
+	if(img == undefined || img == '') {
 		return PlaceholderImg
 	}
-	return img
+	return '/api/uploads/' + img
 }
 
 interface CardImageProps {
@@ -56,5 +43,5 @@ interface CardImageProps {
 }
 
 function CardImage({src}: CardImageProps) {
-	return <img alt='img' src={src}/>
+	return <img alt='img' style={{width: '100%', height: '150px', objectFit: 'cover', borderRadius: '23px 23px 0 0'}} src={src}/>
 }
