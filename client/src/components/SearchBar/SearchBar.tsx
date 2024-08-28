@@ -9,7 +9,8 @@ import style from './SearchBar.module.css'
 import {Row} from '../common/Layout'
 import useOutsideClick from '../../hooks/useOutsideClick'
 import {SearchResult} from './SearchResult'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import wikiAPI from '../../network/WikiAPI'
 
 export function SearchBar() {
 
@@ -66,8 +67,12 @@ export function SearchBar() {
 					{searchResults.map(page => (
 						<div
 							onClick={() => {
-								navigate(`/page/${page._id}`)
-								setSearchIsFocused(false)
+								wikiAPI.byId(page.wikiId, wiki => {
+									navigate(`/wiki/${wiki.name}/page/${page._id}`)
+									setSearchIsFocused(false)
+								},
+								err => toast(err, 'error')
+								)
 							}}
 							key={page._id}
 						>
