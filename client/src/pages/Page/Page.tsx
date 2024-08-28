@@ -77,7 +77,34 @@ export default function Page() {
 	}
 
 	return (
-		<>
+		<div style={{ margin: '0 auto', maxWidth: 'var(--page-max-width)' }}>
+			<P loading={loading}>
+					Last edited by {lastEditor.name}
+			</P>
+			<Row className={style.buttonsRow}>
+				<Button
+					outline
+					text='Edit'
+					onClick={() => navigate(location.pathname + '/edit')}
+					icon={<Pencil color='var(--black)' />}
+					loading={loading}
+				/>
+				<Button
+					outline
+					text='Delete'
+					icon={<Trash color='var(--black)' />}
+					onClick={() => setModalVisibility(true)}
+					loading={loading}
+				/>
+				<Button
+					outline
+					text='History'
+					icon={<History color='var(--black)' />}
+					onClick={() => navigate(location.pathname + '/history')}
+					loading={loading}
+				/>
+			</Row>
+
 			<ConfirmationModal
 				prompt='Are you sure you want to delete this page?'
 				text='This is an irreversible action.'
@@ -85,45 +112,17 @@ export default function Page() {
 				onCancel={() => setModalVisibility(false)}
 				onConfirm={handleDelete}
 			/>
-			<div style={{ margin: '0 auto', maxWidth: 'var(--page-max-width)' }}>
-				<P loading={loading}>
-						Last edited by {lastEditor.name}
-				</P>
-				<Row className={style.buttonsRow}>
-					<Button
-						outline
-						text='Edit'
-						onClick={() => navigate(location.pathname + '/edit')}
-						icon={<Pencil color='var(--black)' />}
-						loading={loading}
-					/>
-					<Button
-						outline
-						text='Delete'
-						icon={<Trash color='var(--black)' />}
-						onClick={() => setModalVisibility(true)}
-						loading={loading}
-					/>
-					<Button
-						outline
-						text='History'
-						icon={<History color='var(--black)' />}
-						onClick={() => navigate(location.pathname + '/history')}
-						loading={loading}
-					/>
-				</Row>
 
-				<Card style={{ margin: '0 auto', width: 'var(--page-max-width)', minHeight: '100vh' }}>
-					<Row className={style.pageContainer}>
-						<Column style={{flex: 4, padding: 0}} loading={loading}>
-							<PageContentSection markdown={page.content} />
-						</Column>
-						<Column style={{flex: 3, padding: 0}} loading={loading}>
-							<PageInfoSection infoSection={page.infoSection} />
-						</Column>
-					</Row>
-				</Card>
-			</div>
-		</>
+			<Card style={{ margin: '0 auto', width: 'var(--page-max-width)', minHeight: '100vh' }}>
+				<Row className={style.pageContainer}>
+					<Column style={{flex: 4, padding: 0}} loading={loading}>
+						<PageContentSection markdown={page.content} />
+					</Column>
+					<Column style={{flex: 3, padding: 0}} loading={loading}>
+						<PageInfoSection infoSection={page.infoSection} />
+					</Column>
+				</Row>
+			</Card>
+		</div>
 	)
 }

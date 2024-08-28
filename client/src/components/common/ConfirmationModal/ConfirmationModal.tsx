@@ -4,6 +4,7 @@ import Card from '../Card'
 import { Filler, Row } from '../Layout'
 import Button from '../Button'
 import useOutsideClick from '../../../hooks/useOutsideClick'
+import TransitionLifecycle from '../TransitionLifecycle'
 
 interface Props {
 	style?: CSSProperties
@@ -21,9 +22,17 @@ export function ConfirmationModal({ prompt, onCancel, onConfirm, visible, text, 
 	const ref = useRef(null)
 	useOutsideClick(ref, onCancel)
 
-	const visibleStyle = visible ? CSSstyle.visible : CSSstyle.hidden
 	return (
-		<div className={`${CSSstyle.backdrop} ${visibleStyle}`}>
+		<TransitionLifecycle
+			willRender={visible}
+			transition={{
+				initial: { opacity: 0, transform: 'translateY(-20px)' },
+				transition: { opacity: 1, transform: 'translateY(0)' },
+				exit: { opacity: 0, transform: 'translateY(20px)' },
+				duration: 200
+			}}
+			style={{zIndex: 1000}}
+		>
 			<Card className={CSSstyle.modal} forwardRef={ref}>
 				<h2>{prompt}</h2>
 				<h5>{text}</h5>
@@ -34,6 +43,6 @@ export function ConfirmationModal({ prompt, onCancel, onConfirm, visible, text, 
 					<Button color='var(--red)' text={confirmText ? confirmText : 'Confirm'} onClick={onConfirm}/>
 				</Row>
 			</Card>
-		</div>
+		</TransitionLifecycle>
 	)
 }

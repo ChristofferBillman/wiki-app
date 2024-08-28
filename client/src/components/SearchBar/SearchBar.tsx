@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react'
+import {CSSProperties, useRef, useState} from 'react'
 
 import Input from '../common/Input'
 import SearchAPI from '../../network/SearchAPI'
@@ -11,6 +11,7 @@ import useOutsideClick from '../../hooks/useOutsideClick'
 import {SearchResult} from './SearchResult'
 import { useNavigate } from 'react-router-dom'
 import wikiAPI from '../../network/WikiAPI'
+import TransitionLifecycle from '../common/TransitionLifecycle'
 
 export function SearchBar() {
 
@@ -19,7 +20,7 @@ export function SearchBar() {
 
 	const [searchIsFocused, setSearchIsFocused] = useState(false)
 
-	const visibilityStyle = (searchResults.length > 0 && searchIsFocused) ? 'visible' : 'hidden'
+	const visible = (searchResults.length > 0 && searchIsFocused)
 
 	const toast = useToast()
 	const navigate = useNavigate()
@@ -43,12 +44,11 @@ export function SearchBar() {
 
 	return (
 		<>
-			<div id={style.searchTint} style={{visibility: visibilityStyle}}/>
 			<Row id={style.searchContainer} forwardRef={ref}>
 				<Input
 					onFocus={() => setSearchIsFocused(true)}
 					placeholder='Search Everything'
-					style={{width: '500px'}}
+					style={{width: '500px', zIndex: 100}}
 					value={searchQuery}
 					name='Search'
 					setValue={e => {
@@ -57,7 +57,7 @@ export function SearchBar() {
 					}}
 				/>
 
-				<div id={style.searchResults} style={{visibility: visibilityStyle}}>
+				<Transition visible={visible} id={style.searchResults}>
 					<p
 						className={style.descriptionText}
 						style={{margin: '1rem 0 0 1rem'}}
@@ -81,11 +81,30 @@ export function SearchBar() {
 							/>
 						</div>)
 					)}
-				</div>
-
+				</Transition>
 			</Row>
-
-
 		</>
 	)
+}
+
+interface TransitionProps {
+	children: React.ReactNode
+	visible: boolean
+	style?: CSSProperties
+	id?: string
+}
+function Transition({children, visible, id}: TransitionProps) {
+	return (
+		<TransitionLifecycle
+			willRender={visible}
+			transition={{
+				initial: { opacity: 0, transform: 'translateY(-10px)' },
+				transition: { opacity: 1, transform: 'translateY(0)' },
+				exit: { opacity: 0, transform: 'translateY(10px)' },
+				duration: 200
+			}}
+			id={id}
+		>
+			{children}
+		</TransitionLifecycle>)
 }
