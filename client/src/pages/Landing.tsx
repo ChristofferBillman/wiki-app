@@ -1,9 +1,14 @@
-import { Column, Filler, Row } from '../components/common/Layout'
+import { useNavigate } from 'react-router-dom'
 
-import TestImg from '../assets/img/testImg.png'
+import { Column, Filler, Row } from '../components/common/Layout'
 import Button from '../components/common/Button'
 import { Arrow, Plus } from '../assets/Icons'
-import { useNavigate } from 'react-router-dom'
+
+import Promo1 from '../assets/img/promo1.png'
+import Promo2 from '../assets/img/promo2.png'
+import Promo3 from '../assets/img/promo3.png'
+import Promo4 from '../assets/img/promo4.png'
+
 
 export default function Landing() {
 
@@ -41,7 +46,7 @@ export default function Landing() {
 				<div style={{height: '16rem'}}/>
 				
 				<PromoSection
-					img={TestImg}
+					img={Promo1}
 					title='One place for all your worldbuilding'
 					description='Collect and document anything you like in an easy to use and simple interface.'
 				/>
@@ -49,7 +54,7 @@ export default function Landing() {
 				<div style={{height: '8rem'}}/>
 
 				<PromoSection
-					img={TestImg}
+					img={Promo2}
 					imgPlacement='left'
 					title='See the history of your wiki as it evolves'
 					description="All edits and changes to pages are saved and can be viewed at any time. Regret an edit? Or someone made changes you didn't like? Just restore the page to a previous version with a few clicks - it's like nothing happened."
@@ -58,7 +63,7 @@ export default function Landing() {
 				<div style={{height: '8rem'}}/>
 
 				<PromoSection
-					img={TestImg}
+					img={Promo3}
 					imgPlacement='right'
 					title='Collaborate and edit pages together'
 					description='Invite friends and collaborators to your wiki. They can view, edit and create new pages, so that your world evolves and changes even further.'
@@ -67,7 +72,7 @@ export default function Landing() {
 				<div style={{height: '8rem'}}/>
 
 				<PromoSection
-					img={TestImg}
+					img={Promo4}
 					imgPlacement='left'
 					title='Extensive and flexible pages'
 					description='Pages are saved as Markdown files, giving them support for inline images, hyperlinks and text formatting options. This gives you the freedom to customize and setup your pages however you like.'
@@ -115,7 +120,7 @@ function PromoSection({img, title, description, imgPlacement='right'}: PromoSect
 				<p>{description}</p>
 			</Column>
 
-			<img src={img} style={{maxWidth: '500px'}}/>
+			<img src={img} style={{maxWidth: '700px', objectFit: 'contain'}}/>
 		</Row>
 	)
 }
