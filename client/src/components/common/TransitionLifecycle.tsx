@@ -41,21 +41,27 @@ export default function TransitionLifecycle({ children, transition, willRender, 
 	const [transitioning, setTransitioning] = useState<boolean>(false)
 
 	useEffect(() => {
+		let timer1: ReturnType<typeof setTimeout>, timer2: ReturnType<typeof setTimeout>
+
 		if (transitioning) return
 		if (willRender) {
 			setChildrenMounted(true)
 			setTransitioning(true)
-			setTimeout(() => {
+			timer1 = setTimeout(() => {
 				setTransitioning(false)
 			}, transition.duration)
 		} else {
 			setTransitioning(true)
-			setTimeout(() => {
+			timer2 = setTimeout(() => {
 				setChildrenMounted(false)
 				setTransitioning(false)
 			}, transition.duration)
 		}
-	}, [willRender, transition.duration, transitioning])
+		return () => {
+			clearTimeout(timer1)
+			clearTimeout(timer2)
+		}
+	}, [willRender, transition.duration])
 
 	const getCurrentStyle = (): CSSProperties => {
 		const transitionDuration: CSSProperties = { transitionDuration: transition.duration + 'ms' }
