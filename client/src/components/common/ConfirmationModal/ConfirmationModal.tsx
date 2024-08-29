@@ -31,7 +31,7 @@ export function ConfirmationModal({ prompt, onCancel, onConfirm, visible, text, 
 				exit: { opacity: 0, transform: 'translateY(20px)' },
 				duration: 200
 			}}
-			style={{zIndex: 1000}}
+			style={{zIndex: 1000, position: 'fixed', top:'50%', left:'50%'}}
 		>
 			<Card className={CSSstyle.modal} forwardRef={ref}>
 				<h2>{prompt}</h2>

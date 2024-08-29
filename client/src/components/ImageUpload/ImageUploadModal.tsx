@@ -42,6 +42,7 @@ export function ImageUploadModal({ isOpen, setIsOpen, onImgUploaded }: Props) {
 				exit: { opacity: 0, transform: 'translateY(20px)' },
 				duration: 200
 			}}
+			style={{zIndex: 1000, position: 'fixed', top:'50%', left:'50%'}}
 		>
 			<div ref={ref}>
 				<Card className={CSSstyle.modal}>
