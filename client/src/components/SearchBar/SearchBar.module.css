@@ -35,6 +35,11 @@
     text-overflow: ellipsis;
 }
 
+.clickableText {
+    color: var(--primary);
+    cursor: pointer;
+}
+
 @media screen and (max-width: 950px) {
     #searchContainer {
       padding: 0;
