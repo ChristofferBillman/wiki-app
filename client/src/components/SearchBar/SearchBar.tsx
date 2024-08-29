@@ -139,7 +139,7 @@ function Transition({children, visible, id}: TransitionProps) {
 			transition={{
 				initial: { opacity: 0, transform: 'translateY(-10px)' },
 				transition: { opacity: 1, transform: 'translateY(0)' },
-				exit: { opacity: 0, transform: 'translateY(10px)' },
+				exit: { opacity: 0, transform: 'translateY(-10px)' },
 				duration: 200
 			}}
 			id={id}
