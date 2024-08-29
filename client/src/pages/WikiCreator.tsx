@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react'
+import { useReducer, useRef, useState } from 'react'
 
 // External Dependencies
 import { useNavigate } from 'react-router-dom'
@@ -14,28 +14,34 @@ import WikiAPI from '../network/WikiAPI'
 import wikiReducer, { initalWiki, WikiReducerType } from '../reducers/WikiReducer'
 import UserInput from '../components/UserInput'
 import User from '../types/User'
-import ImageUploadButton from '../components/ImageUpload'
+import FileAPI from '../network/FileAPI'
 
 export default function WikiCreator() {
 	const navigate = useNavigate()
 
 	const toast = useToast()
 
+	const [filename, setFilename] = useState('')
+	const filePickerRef = useRef(null)
+
 	const [wiki, dispatch] = useReducer(wikiReducer, initalWiki)
 
 	const [members, setMembers] = useState<User[]>([])
 
 	const onSubmit = () => {
-		WikiAPI.create(wiki,
-			() => {
-				toast('Successfully created wiki', 'success')
-				navigate(-1)
+		// Why did I un-promisify fetch calls, this code looks like a mess...
+		// TODO: Rewrite all networking code to return promises instead. Va lite att göra :-))
+		FileAPI.upload(filePickerRef,
+			res => {
+				const wikiWithImg = {...wiki, img: res.filename}
+				WikiAPI.create(wikiWithImg,
+					() => {
+						toast('Successfully created wiki', 'success')
+						navigate(-1)
+					},
+					() => toast('Fill in all fields.', 'error'))
 			},
-			() => toast('Fill in all fields.', 'error'))
-	}
-
-	const handleImgUpload = (filename: string) => {
-		dispatch({type: WikiReducerType.SET_FIELD, payload: {target: {name: 'img', value: filename }}})
+			err => toast(err, 'error'))
 	}
 
 	return (
@@ -58,15 +64,22 @@ export default function WikiCreator() {
 						name='description'
 					/>
 
-					<ImageUploadButton
-						onImgUploaded={handleImgUpload}
+					<h4 style={{marginBottom: '-0.5rem'}}>Cover Image</h4>
+					<Input
+						value={filename}
+						setValue={e => setFilename(e.target.value)}
+						type='file'
+						name='filepicker'
+						ref={filePickerRef}
 					/>
 
+					<h4 style={{marginBottom: '-0.5rem'}}>Members</h4>
 					<UserInput
 						addedUsers={members}
 						setAddedUsers={setMembers}
 						placeholder='Click and type to add users to your wiki'
 					/>
+					<p style={{color: 'var(--gray)'}}>Users added as members of your wiki will be able to create, edit and delete pages in the wiki. They cannot delete or manage the wiki itself.</p>
 				</Column>
 			</Card>
 
