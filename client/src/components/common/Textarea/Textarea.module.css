@@ -1,0 +1,12 @@
+.editor {
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    background: none;
+    padding: 1rem;
+    overflow: hidden;
+    max-height: 100vh;
+    line-height: 1.5rem;
+    font-size: 1rem;
+    color: var(--black);
+}

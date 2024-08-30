@@ -52,6 +52,7 @@ export default function WikiHome() {
 					color='var(--white)'
 					outline
 					icon={<Cogwheel color='var(--black)'/>}
+					onClick={() => navigate(location.pathname + '/settings')}
 				/>
 			</Row>
 			<img

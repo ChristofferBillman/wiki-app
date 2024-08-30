@@ -1,3 +1,4 @@
+import User from '../types/User'
 import Wiki from '../types/Wiki'
 import { post, put, del, get } from './common/http'
 
@@ -14,22 +15,27 @@ async function byName(wikiName: string, onSuccess: (arg0: Wiki) => void, onError
 	get('/wiki?wikiName=' + wikiName, onSuccess, onError)
 }
 
+async function getMembers(wikiId: string, onSuccess: (arg0: User[]) => void, onError: (arg0: string) => void) {
+	get(`/wiki/${wikiId}/members/`, onSuccess, onError)
+}
+
 async function create(wikiData: Wiki, onSuccess: (arg0: unknown) => void, onError: (arg0: string) => void) {
 	post(wikiData, '/wiki', onSuccess, onError)
 }
 
-async function update(wikiId: string | undefined, wikiData: Wiki, onSuccess: (arg0: unknown) => void, onError: (arg0: string) => void) {
+async function update(wikiId: string | undefined, wikiData: Wiki, onSuccess: (arg0: Wiki) => void, onError: (arg0: string) => void) {
 	idGuard(wikiId)
 	put(wikiData, `/wiki/${wikiId}`, onSuccess, onError)
 }
 
-async function remove(wikiId: string | undefined, onSuccess: (arg0: unknown) => void, onError: (arg0: string) => void) {
+async function remove(wikiId: string | undefined, onSuccess: (arg0: Wiki) => void, onError: (arg0: string) => void) {
 	idGuard(wikiId)
 	del({}, `/wiki/${wikiId}`, onSuccess, onError)
 }
 
-async function addUserToWiki(wikiId: string, userId: string, onSuccess: (arg0: unknown) => void, onError: (arg0: string) => void) {
-	put({wikiId, userId}, '/wiki/addUserToWiki', onSuccess, onError)
+async function updateMembers(wikiId: string | undefined, userIds: (string | undefined)[], onSuccess: (arg0: User[]) => void, onError: (arg0: string) => void) {
+	idGuard(wikiId)
+	put({userIds}, `/wiki/${wikiId}/members`, onSuccess, onError)
 }
 
 function idGuard(id: string | undefined) {
@@ -43,7 +49,8 @@ const wikiAPI = {
 	all,
 	byId,
 	byName,
-	addUserToWiki
+	updateMembers,
+	getMembers
 }
 
 export default wikiAPI

@@ -1,6 +1,6 @@
 .modal {
     width: fit-content;
-    max-width: 300px;
+    max-width: 400px;
     background: var(--white);
     transform: translate(-50%, -50%);
     box-shadow: 2px 2px 50vw 150vw rgba(0,0,0,0.3);

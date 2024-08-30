@@ -26,6 +26,7 @@ import ChangeUsername from './pages/ChangeUsername.tsx'
 import WikiHome from './pages/WikiHome.tsx'
 import Landing from './pages/Landing.tsx'
 import WikiCreator from './pages/WikiCreator.tsx'
+import WikiSettings from './pages/WikiSettings.tsx'
 
 export default function App() {
 	return (
@@ -39,6 +40,7 @@ export default function App() {
 							<Route path='/wiki/create' element={<WikiCreator/>}/>
 
 							<Route path='/settings' element={<Settings />}/>
+							<Route path='wiki/:wikiname/settings' element={<WikiSettings />}/>
 							<Route path='settings/changePassword' element={<ChangePassword/>}/>
 							<Route path='settings/changeUsername' element={<ChangeUsername/>}/>
 

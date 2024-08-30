@@ -5,9 +5,13 @@ import { ImageUploadModal } from './ImageUploadModal'
 
 interface Props {
 	onImgUploaded: (url: string) => void
+	text?: string
+	color?: string
+	icon?: React.ReactElement
+	outline?: boolean
 }
 
-export function ImageUploadButton({onImgUploaded}: Props) {
+export function ImageUploadButton({onImgUploaded, text, color, icon, outline}: Props) {
 
 	const [isOpen, setIsOpen] = useState(false)
 
@@ -19,9 +23,10 @@ export function ImageUploadButton({onImgUploaded}: Props) {
 	return (
 		<>
 			<Button
-				text='Upload Image'
-				color='var(--primary)'
-				icon={<Plus/>}
+				text={text ? text : 'Upload Image'}
+				color={color ? color : 'var(--primary)'}
+				icon={icon ? icon : <Plus/>}
+				outline={outline}
 				onClick={() => setIsOpen(true)}
 			/>
 			

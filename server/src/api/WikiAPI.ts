@@ -8,15 +8,21 @@ export default function WikiAPI(app: Application, BASEURL: string) {
         try {
             const { wikiName } = req.query
 
+            const currentUser = await User.findById(req.userId)
+
             if(wikiName) {
                 const wiki: IWiki | null = await Wiki.findOne({name: wikiName})
 
                 if(!wiki) return res.staus(404).send('Could not find a wiki with that name.')
 
+                if(!currentUser.wikis.includes(wiki._id)) {
+                    return res.status(401).send('You are not a member of this wiki.')
+                }
+
                 return res.json(wiki)
             }
 
-            const wikis: IWiki[] = await Wiki.find()
+            const wikis: IWiki[] = await Wiki.find({_id: {$in: currentUser.wikis }})
             res.json(wikis)
         } catch (error) {
             res.status(500).send('An error occurred' )
@@ -34,6 +40,17 @@ export default function WikiAPI(app: Application, BASEURL: string) {
         }
     })
 
+     // GET
+     app.get(BASEURL + '/:id/members/',  async (req, res) => {
+        try {
+            const wikiId = req.params.id
+            const members = await User.find({wikis: { $in: [wikiId]}})
+            res.json(members)
+        } catch (error) {
+            res.status(500).send('An error occurred' )
+        }
+    })
+
     // POST
     app.post(BASEURL + '/', async (req, res) => {
         try {
@@ -44,6 +61,11 @@ export default function WikiAPI(app: Application, BASEURL: string) {
                 img,
                 name
             })
+
+            // Add the creator of the wiki as a member
+            const currentUser = await User.findById(req.userId)
+            currentUser.wikis.push(newWiki._id)
+            await currentUser.save()
 
             const createdWiki: IWiki = await newWiki.save()
             res.status(201).json(createdWiki)
@@ -94,15 +116,23 @@ export default function WikiAPI(app: Application, BASEURL: string) {
     })
 
     // PUT
-    app.put(BASEURL + '/addUserToWiki', async (req, res) => {
+    // Making this was a mess.
+    
+    app.put(BASEURL + '/:wikiId/members', async (req, res) => {
         try {
-            const { wikiId, userId } = req.body
+            const { userIds } = req.body
+            const { wikiId } = req.params
+            
+            const oldMembersList = await User.find({wikis: { $in: [wikiId]}})    
+            const newMembersList = await User.find({ _id:{ $in: userIds } })
 
-            const userToBeAdded = await User.findById(userId)
-
-            if(!userToBeAdded) {
-                return res.status(404).send('User to be added to wiki was not found.')
-            }
+            const toBeRemoved = oldMembersList.filter(oldMember => 
+                !newMembersList.some(newMember => newMember._id == oldMember._id)
+            )
+            
+            const toBeAdded = newMembersList.filter(newMember => 
+                !oldMembersList.some(oldMember => oldMember._id == newMember._id)
+            )
 
             const thisUser: IUser = await User.findById(req.userId)
 
@@ -115,24 +145,23 @@ export default function WikiAPI(app: Application, BASEURL: string) {
                 return res.status(401).send('You must be part of a wiki to add another user to it.')
             }
 
-            // Check is user is already part of that wiki.
-            if(userToBeAdded.wikis.includes(wikiId)) {
-                return res.status(418).send('User is already part of that wiki')
-            }
+            await User.updateMany(
+                { _id: { $in: toBeRemoved.map(user => user._id) } },
+                { $pull: { wikis: wikiId } }
+            )
 
-            userToBeAdded.wikis.push(wikiId)
+            await User.updateMany(
+                { _id: { $in: toBeAdded.map(user => user._id) } },
+                { $addToSet: { wikis: wikiId } }
+            )
 
-            const updatedUser = await userToBeAdded.save()
-
-            if (!updatedUser) {
-                return res.status(404).send('User not found')
-            }
-
-            delete updatedUser.password
-
-            res.json(updatedUser)
+            res.json(newMembersList.map(member => {
+                const { password, ...safeMember } = member.toObject()
+                return safeMember
+            }))
         } catch (error) {
             console.log(error)
+            console.log("MEN ASSSÅÅÅÅ")
             res.status(500).send('An error occurred')
         }
     })
