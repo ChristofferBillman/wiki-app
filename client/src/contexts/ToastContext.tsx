@@ -12,16 +12,16 @@ interface Props {
 // Setup and export provider
 export function ToastContextProvider({ children }: Props): JSX.Element {
 
-	const [opacity, setOpacity] = useState(0)
+	const [visible, setVisible] = useState(false)
 	const [message, setMessage] = useState('')
 	const [type, setType] = useState<ToastType>('info')
 
 	const setToast = (message: string, type: ToastType) => {
 		setType(type)
 		setMessage(message)
-		setOpacity(1)
+		setVisible(true)
 
-		setTimeout(() => setOpacity(0), 5000)
+		setTimeout(() => setVisible(false), 5000)
 	}
 
 	return (
@@ -29,7 +29,7 @@ export function ToastContextProvider({ children }: Props): JSX.Element {
 			<Toast
 				message={message}
 				type={type}
-				opacity={opacity}
+				visible={visible}
 			/>
 			{children}
 		</toastContext.Provider>

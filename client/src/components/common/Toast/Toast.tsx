@@ -2,19 +2,31 @@ import CSSstyle from './Toast.module.css'
 import Card from '../Card'
 import { ToastType } from '../../../contexts/ToastContext'
 import { Info, Cross, Check } from '../../../assets/Icons'
+import TransitionLifecycle from '../TransitionLifecycle'
 
 interface Props {
 	message: string
 	type: ToastType
-	opacity: number
+	visible: boolean
 }
 
-export function Toast({ message, type = 'info', opacity }: Props) {
+export function Toast({ message, type = 'info', visible }: Props) {
 	return (
-		<Card className={`${getStyle(type)} ${CSSstyle.toast}`} style={{opacity}}>
-			{getIcon(type)}
-			<p>{message}</p>
-		</Card>
+		<TransitionLifecycle
+			willRender={visible}
+			transition={{
+				initial: { opacity: 0, transform: 'translateY(20px)' },
+				transition: { opacity: 1, transform: 'translateY(0)' },
+				exit: { opacity: 0, transform: 'translateY(20px)' },
+				duration: 200
+			}}
+			style={{ position: 'fixed', bottom: '3rem', right: '3rem', background: 'var(--white)', borderRadius: '18px'}}
+		>
+			<Card className={`${getStyle(type)} ${CSSstyle.toast}`}>
+				{getIcon(type)}
+				<p>{message}</p>
+			</Card>
+		</TransitionLifecycle>
 	)
 }
 
