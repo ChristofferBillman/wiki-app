@@ -3,7 +3,6 @@ import { CSSProperties } from 'react'
 
 // Styling
 import CSSstyle from './Card.module.css'
-import Skeleton from '../Skeleton'
 
 interface Props {
 	children?: JSX.Element[] | JSX.Element
@@ -15,7 +14,7 @@ interface Props {
 	forwardRef?: any
 }
 
-export function Card({children, onClick, style, className, loading, errored, forwardRef}: Props) {
+export function Card({children, onClick, style, className, forwardRef}: Props) {
 
 	// If card has onClick prop, it should respond as such for the user,
 	// i.e. having hover effects.
