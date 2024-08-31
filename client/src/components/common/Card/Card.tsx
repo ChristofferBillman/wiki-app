@@ -22,10 +22,8 @@ export function Card({children, onClick, style, className, loading, errored, for
 	const clickableStyle = onClick ? CSSstyle.cardClickable : ''
 
 	return (
-		<Skeleton loading={loading} errored={errored} style={{borderRadius: '24px'}}>
-			<div ref={forwardRef} className={`${CSSstyle.card} ${clickableStyle} ${className}`} style={style} onClick={onClick}>
-				{children}
-			</div>
-		</Skeleton>
+		<div ref={forwardRef} className={`${CSSstyle.card} ${clickableStyle} ${className}`} style={style} onClick={onClick}>
+			{children}
+		</div>
 	)
 }
