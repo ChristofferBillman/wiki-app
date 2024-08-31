@@ -26,7 +26,7 @@ import ChangeUsername from './pages/ChangeUsername.tsx'
 import WikiHome from './pages/WikiHome.tsx'
 import Landing from './pages/Landing.tsx'
 import WikiCreator from './pages/WikiCreator.tsx'
-import WikiSettings from './pages/WikiSettings.tsx'
+import WikiSettings from './pages/WikiSettings'
 
 export default function App() {
 	return (

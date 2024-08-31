@@ -2,28 +2,30 @@
 import { useNavigate, useParams } from 'react-router-dom'
 
 // Internal dependencies
-import { Column, Filler, Row } from '../components/common/Layout'
-import Card from '../components/common/Card'
-import useToast from '../contexts/ToastContext'
-import { Arrow, Check, Cross, Floppy, Pencil, Trash } from '../assets/Icons'
-import Button from '../components/common/Button'
+import { Column, Filler, Row } from '../../components/common/Layout'
+import Card from '../../components/common/Card'
+import useToast from '../../contexts/ToastContext'
+import { Arrow, Check, Cross, Floppy, Pencil, Trash } from '../../assets/Icons'
+import Button from '../../components/common/Button'
 import { useEffect, useReducer, useState } from 'react'
-import wikiAPI from '../network/WikiAPI'
-import wikiReducer, { initalWiki, WikiReducerType } from '../reducers/WikiReducer'
-import P from '../components/common/text/P'
-import ImageUploadButton from '../components/ImageUpload'
-import UserInput from '../components/UserInput'
-import User from '../types/User'
-import Divider from '../components/common/Divider'
-import Input from '../components/common/Input'
-import Textarea from '../components/common/Textarea'
-import ConfirmationModal from '../components/common/ConfirmationModal'
-import Wiki from '../types/Wiki'
-import H4 from '../components/common/text/H4'
-import H5 from '../components/common/text/H5'
-import { LoadContextProvider } from '../contexts/LoadContext'
+import wikiAPI from '../../network/WikiAPI'
+import wikiReducer, { initalWiki, WikiReducerType } from '../../reducers/WikiReducer'
+import P from '../../components/common/text/P'
+import ImageUploadButton from '../../components/ImageUpload'
+import UserInput from '../../components/UserInput'
+import User from '../../types/User'
+import Divider from '../../components/common/Divider'
+import Input from '../../components/common/Input'
+import Textarea from '../../components/common/Textarea'
+import ConfirmationModal from '../../components/common/ConfirmationModal'
+import Wiki from '../../types/Wiki'
+import H4 from '../../components/common/text/H4'
+import H5 from '../../components/common/text/H5'
+import { LoadContextProvider } from '../../contexts/LoadContext'
 
-export default function WikiSettings() {
+import CSSstyle from './WikiSettings.module.css'
+
+export function WikiSettings() {
 	const toast = useToast()
 	const { wikiname } = useParams()
 
@@ -112,8 +114,8 @@ export default function WikiSettings() {
 			<Card style={{ margin: '0 auto', width: 'var(--page-max-width)', minHeight: '100vh' }}>
 				<Column>
 					<h2 style={{ paddingLeft: '1rem' }}> {wiki.name}</h2>
-					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-						<Column style={{ padding: 0, gap: '0.25rem', width: '50%' }}>
+					<Row className={CSSstyle.row}>
+						<Column style={{ padding: 0 }} className={CSSstyle.itemColumn}>
 							<H4> Wiki Name </H4>
 							<H5>
 								Is displayed to all members of the wiki. Is used in links to the wiki and its pages. If it is changed old links to it will break.
@@ -149,8 +151,8 @@ export default function WikiSettings() {
 						</Row>
 					</Row>
 
-					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-						<Column style={{ padding: 0, gap: '0.25rem' }}>
+					<Row className={CSSstyle.row}>
+						<Column style={{ padding: 0}} className={CSSstyle.itemColumn}>
 							<H4>Cover Image</H4>
 							<H5>Image shown on the homepage for the wiki.</H5>
 						</Column>
@@ -251,8 +253,8 @@ export default function WikiSettings() {
 
 					<Divider />
 
-					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-						<Column style={{ padding: 0, gap: '0.25rem', width: '50%' }}>
+					<Row className={CSSstyle.row}>
+						<Column style={{ padding: 0}} className={CSSstyle.itemColumn}>
 							<H4>Export Wiki</H4>
 							<H5>Export all content associated with the Wiki. The export consist of a zip archive with all pages of the wiki, including their history.</H5>
 						</Column>
@@ -264,8 +266,8 @@ export default function WikiSettings() {
 						/>
 					</Row>
 
-					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-						<Column style={{ padding: 0, gap: '0.25rem', width: '50%' }}>
+					<Row className={CSSstyle.row}>
+						<Column style={{ padding: 0}} className={CSSstyle.itemColumn}>
 							<H4>Import Pages</H4>
 							<H5>Pages previously exported can be imported into this wiki.</H5>
 						</Column>
@@ -279,8 +281,8 @@ export default function WikiSettings() {
 
 					<Divider />
 
-					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-						<Column style={{ padding: 0, gap: '0.25rem', width: '50%' }}>
+					<Row className={CSSstyle.row}>
+						<Column style={{ padding: 0}} className={CSSstyle.itemColumn}>
 							<H4>Delete Wiki</H4>
 							<H5>Deleting a wiki will permanently remove all content associated with a wiki, i.e. its pages, page history, description and cover image.</H5>
 						</Column>

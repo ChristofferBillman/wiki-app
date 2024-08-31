@@ -1,0 +1,21 @@
+.row {
+    align-items: center;
+    justify-content: space-between;
+}
+
+.itemColumn {
+    gap: 0.25rem;
+    width: 50%;
+}
+
+@media screen and (max-width: 950px) {
+    .row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .itemColumn {
+        gap: 0.25rem;
+        width: 100%;
+    }
+}

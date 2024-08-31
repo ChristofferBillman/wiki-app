@@ -15,10 +15,11 @@ import { Reorder} from './Reorder'
 import { Restore } from './Restore'
 import { Sun } from './Sun'
 import { Moon } from './Moon'
+import { Home } from './Home'
 
 export {
 	Plus, Search, Person, Cogwheel, Trash,
 	Pencil, History, Floppy, Arrow, Cross,
 	PageIcon, Sun, Moon,
-	Info, Check, Reorder, Restore
+	Info, Check, Reorder, Restore, Home
 }
