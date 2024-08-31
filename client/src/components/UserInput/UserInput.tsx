@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from 'react'
+import { SetStateAction, useEffect, useState } from 'react'
 
 import useToast from '../../contexts/ToastContext'
 
@@ -35,6 +35,10 @@ export function UserInput({addedUsers, setAddedUsers, placeholder = 'Click and t
 			setSearchResults([])
 		}
 	}
+	// Forgive me for this react gods.
+	useEffect(() => {
+		search(searchQuery)
+	}, [addedUsers])
 
 	const handleAddUser = (user: User) => {
 		setAddedUsers([...addedUsers, user])

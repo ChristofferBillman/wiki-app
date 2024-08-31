@@ -9,13 +9,16 @@ import PlaceholderImg from '../../assets/img/placeholder.jpg'
 import { useMemo } from 'react'
 
 interface Props {
-    page: Page
+    page?: Page
+	loading?: boolean
 }
 
-export function PageCard({page}: Props) {
+export function PageCard({page, loading=false}: Props) {
 
 	const navigate = useNavigate()
 	const location = useLocation()
+
+	if(loading || !page) return <Skeleton/>
 
 	const {title, description} = useMemo(() => getTitleAndDescription(page), [page])
 
@@ -30,6 +33,12 @@ export function PageCard({page}: Props) {
 				<p>{description}</p>
 			</Column>
 		</Card>
+	)
+}
+
+function Skeleton() {
+	return (
+		<Card style={{width: '400px', maxWidth: '600px', height: '200px'}} loading/>
 	)
 }
 

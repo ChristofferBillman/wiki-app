@@ -50,7 +50,7 @@ export function Navbar() {
 					/>
 					<Button
 						outline
-						text={user.name}
+						text='Home'
 						textColor='var(--gray)'
 						icon={<Person color='var(--gray)'/>}
 						onClick={() => {

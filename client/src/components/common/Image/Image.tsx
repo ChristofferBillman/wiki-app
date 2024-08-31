@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import style from './Image.module.css'
 
-export default function Image({ src, alt, children }: any) {
+export function Image({ src, alt, children }: any) {
 
 	const [loading, setLoading] = useState(true)
 	const [galleryVisible, setGalleryVisible] = useState(false)

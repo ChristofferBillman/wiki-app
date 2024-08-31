@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom'
 
 // Internal dependencies
-import { Column, Row } from '../components/common/Layout'
+import { Column, Filler, Row } from '../components/common/Layout'
 import Card from '../components/common/Card'
 import useToast from '../contexts/ToastContext'
 import useUser from '../contexts/UserContext'
@@ -34,6 +34,13 @@ export default function Settings() {
 		<>
 			<Row style={{ alignItems: 'center', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
 				<h1>Settings</h1>
+				<Filler/>
+				<Button
+					text='Back'
+					outline
+					color='var(--white)'
+					onClick={() => navigate(-1)}
+				/>
 			</Row>
 
 			<Card style={{ margin: '0 auto', width: 'var(--page-max-width)', minHeight: '100vh' }}>

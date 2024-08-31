@@ -31,7 +31,6 @@ export default function WikiSettings() {
 
 	const [wikiNameIsEdit, setWikiNameIsEdit] = useState(false)
 	const [descriptionIsEdit, setDescriptionIsEdit] = useState(false)
-	const [membersIsEdit, setMembersIsEdit] = useState(false)
 
 	const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false)
 
@@ -81,17 +80,11 @@ export default function WikiSettings() {
 	const handleEditMembers = () => {
 		wikiAPI.updateMembers(wiki._id, members.map(member => member._id),
 			() => {
-				setMembersIsEdit(false)
 				setMembersReference(members)
-				toast('Changes to members were successful', 'success')
+				toast('Changes Applied', 'success')
 			},
 			err => toast(err, 'error')
 		)
-	}
-
-	const handleCancelEditMembers = () => {
-		// We need some mechanism to tell userInput not to display search results yet. This can happen after the addedMembers array has been reset.
-		setMembers(membersReference)
 	}
 
 	return (
@@ -102,7 +95,7 @@ export default function WikiSettings() {
 					text='Return to Wiki'
 					outline
 					color='var(--white)'
-					onClick={() => navigate(-1)}
+					onClick={() => navigate('/wiki/' + wiki.name)}
 				/>
 			</Row>
 
@@ -223,7 +216,7 @@ export default function WikiSettings() {
 												text={'Cancel'}
 												color='var(--white)'
 												outline
-												onClick={handleCancelEditMembers}
+												onClick={() => setMembers(membersReference)}
 											/>
 											<Button
 												text={'Save Changes'}

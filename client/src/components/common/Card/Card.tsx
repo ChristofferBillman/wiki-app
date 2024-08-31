@@ -5,7 +5,7 @@ import { CSSProperties } from 'react'
 import CSSstyle from './Card.module.css'
 
 interface Props {
-	children: JSX.Element[] | JSX.Element
+	children?: JSX.Element[] | JSX.Element
 	style?: CSSProperties
 	onClick?: () => void
 	className?: string

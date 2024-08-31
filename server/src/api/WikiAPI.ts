@@ -79,11 +79,11 @@ export default function WikiAPI(app: Application, BASEURL: string) {
     app.put(BASEURL + '/:id', async (req, res) => {
         try {
             const WikiId = req.params.id
-            const { description, img } = req.body
+            const { description, img, name } = req.body
 
             const updatedWiki: IWiki | null = await Wiki.findByIdAndUpdate(
                 WikiId,
-                { description, img },
+                { description, img, name },
                 { new: true }
             )
 
