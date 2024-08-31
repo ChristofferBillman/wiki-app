@@ -61,8 +61,8 @@ export default function WikiHome() {
 
 	return (
 		<>
-			<H1 style={{color: 'red', position: 'absolute', top: '23rem'}} loading={wikiLoading}>{wiki.name}</H1>
-			<P style={{color: 'red', position: 'absolute', top: '27rem'}} loading={wikiLoading}>{wiki.description}</P>
+			<H1 style={{color: '#fff', position: 'absolute', top: '23rem'}} loading={wikiLoading}>{wiki.name}</H1>
+			<P style={{color: '#fff', position: 'absolute', top: '27rem'}} loading={wikiLoading}>{wiki.description}</P>
 
 			<Row style={{ padding: 0, position: 'absolute', top: '33rem'}}>
 				<Button

@@ -7,13 +7,10 @@ import { Filler, Row } from '../common/Layout'
 import SearchBar from '../SearchBar'
 import style from './Navbar.module.css'
 import { useState } from 'react'
-import useUser from '../../contexts/UserContext'
 
 export function Navbar() {
 
 	const navigate = useNavigate()
-
-	const { user } = useUser()
 
 	const [menuOpen, setMenuOpen] = useState(false)
 
