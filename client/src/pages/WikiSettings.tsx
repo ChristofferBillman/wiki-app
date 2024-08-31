@@ -10,7 +10,7 @@ import Button from '../components/common/Button'
 import { useEffect, useReducer, useState } from 'react'
 import wikiAPI from '../network/WikiAPI'
 import wikiReducer, { initalWiki, WikiReducerType } from '../reducers/WikiReducer'
-import P from '../components/common/P'
+import P from '../components/common/text/P'
 import ImageUploadButton from '../components/ImageUpload'
 import UserInput from '../components/UserInput'
 import User from '../types/User'
@@ -19,6 +19,9 @@ import Input from '../components/common/Input'
 import Textarea from '../components/common/Textarea'
 import ConfirmationModal from '../components/common/ConfirmationModal'
 import Wiki from '../types/Wiki'
+import H4 from '../components/common/text/H4'
+import H5 from '../components/common/text/H5'
+import { LoadContextProvider } from '../contexts/LoadContext'
 
 export default function WikiSettings() {
 	const toast = useToast()
@@ -34,6 +37,9 @@ export default function WikiSettings() {
 
 	const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false)
 
+	const [error, setError] = useState('')
+	const [loading, setLoading] = useState(true)
+
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -45,8 +51,12 @@ export default function WikiSettings() {
 					members => {
 						setMembers(members)
 						setMembersReference(members)
+						setLoading(false)
 					},
-					err => toast(err, 'error'))
+					err => {
+						toast(err, 'error')
+						setError(err + '.')
+					})
 				dispatch({ type: WikiReducerType.SET_STATE, payload: wiki })
 			},
 			err => toast(err, 'error')
@@ -88,7 +98,7 @@ export default function WikiSettings() {
 	}
 
 	return (
-		<>
+		<LoadContextProvider loading={loading} errored={error != ''}>
 			<Row style={{ alignItems: 'center', maxWidth: 'var(--page-max-width)', margin: '0 auto', justifyContent: 'space-between' }}>
 				<h1>Manage Wiki</h1>
 				<Button
@@ -104,8 +114,10 @@ export default function WikiSettings() {
 					<h2 style={{ paddingLeft: '1rem' }}> {wiki.name}</h2>
 					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
 						<Column style={{ padding: 0, gap: '0.25rem', width: '50%' }}>
-							<h4>Wiki Name</h4>
-							<h5>Is displayed to all members of the wiki. Is used in links to the wiki and its pages. If it is changed old links to it will break.</h5>
+							<H4> Wiki Name </H4>
+							<H5>
+								Is displayed to all members of the wiki. Is used in links to the wiki and its pages. If it is changed old links to it will break.
+							</H5>
 						</Column>
 						<Row style={{ padding: 0, alignItems: 'center' }}>
 							{wikiNameIsEdit ? (
@@ -126,7 +138,7 @@ export default function WikiSettings() {
 								</>
 							) : (
 								<>
-									<h5>{wiki.name}</h5>
+									<H5>{wiki.name}</H5>
 									<Button
 										outline
 										icon={<Pencil color='var(--black)' />}
@@ -139,8 +151,8 @@ export default function WikiSettings() {
 
 					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
 						<Column style={{ padding: 0, gap: '0.25rem' }}>
-							<h4>Cover Image</h4>
-							<h5>Image shown on the homepage for the wiki.</h5>
+							<H4>Cover Image</H4>
+							<H5>Image shown on the homepage for the wiki.</H5>
 						</Column>
 
 						<Filler />
@@ -156,8 +168,8 @@ export default function WikiSettings() {
 
 					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
 						<Column style={{ padding: 0, gap: '0.25rem', width: '100%', height: '9rem'}}>
-							<h4>Description</h4>
-							<h5>The text shown on the homepage of the wiki.</h5>
+							<H4>Description</H4>
+							<H5>The text shown on the homepage of the wiki.</H5>
 							{descriptionIsEdit ? (
 								
 								<Textarea
@@ -205,8 +217,8 @@ export default function WikiSettings() {
 						<Column style={{ padding: 0, gap: '0.25rem', width: '100%' }}>
 							<Row style={{ padding: 0, alignItems: 'center', justifyContent: 'space-between' }}>
 								<div>
-									<h4>Manage Members</h4>
-									<h5 style={{ marginBottom: '1rem' }}>Members of your wiki can create, edit and delete pages.</h5>
+									<H4>Manage Members</H4>
+									<H5 style={{ marginBottom: '1rem' }}>Members of your wiki can create, edit and delete pages.</H5>
 								</div>
 								<>
 									{!arrHasSameContents(members, membersReference) && (
@@ -241,8 +253,8 @@ export default function WikiSettings() {
 
 					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
 						<Column style={{ padding: 0, gap: '0.25rem', width: '50%' }}>
-							<h4>Export Wiki</h4>
-							<h5>Export all content associated with the Wiki. The export consist of a zip archive with all pages of the wiki, including their history.</h5>
+							<H4>Export Wiki</H4>
+							<H5>Export all content associated with the Wiki. The export consist of a zip archive with all pages of the wiki, including their history.</H5>
 						</Column>
 						<Button
 							outline
@@ -254,8 +266,8 @@ export default function WikiSettings() {
 
 					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
 						<Column style={{ padding: 0, gap: '0.25rem', width: '50%' }}>
-							<h4>Import Pages</h4>
-							<h5>Pages previously exported can be imported into this wiki.</h5>
+							<H4>Import Pages</H4>
+							<H5>Pages previously exported can be imported into this wiki.</H5>
 						</Column>
 						<Button
 							outline
@@ -269,8 +281,8 @@ export default function WikiSettings() {
 
 					<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
 						<Column style={{ padding: 0, gap: '0.25rem', width: '50%' }}>
-							<h4>Delete Wiki</h4>
-							<h5>Deleting a wiki will permanently remove all content associated with a wiki, i.e. its pages, page history, description and cover image.</h5>
+							<H4>Delete Wiki</H4>
+							<H5>Deleting a wiki will permanently remove all content associated with a wiki, i.e. its pages, page history, description and cover image.</H5>
 						</Column>
 						<Button
 							text='Delete Wiki'
@@ -291,7 +303,7 @@ export default function WikiSettings() {
 
 				</Column>
 			</Card>
-		</>
+		</LoadContextProvider>
 	)
 }
 
