@@ -8,12 +8,14 @@ import PlaceholderImg from '../../assets/img/placeholder.jpg'
 import Wiki from '../../types/Wiki'
 
 interface Props {
-    wiki: Wiki
+    wiki?: Wiki
 }
 
 export function WikiCard({wiki}: Props) {
 
 	const navigate = useNavigate()
+
+	if(!wiki) return (<Card style={{width: '400px', maxWidth: '600px', height: '245px'}}/>)
 
 	return (
 		<Card

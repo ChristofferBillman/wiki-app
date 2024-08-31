@@ -17,9 +17,10 @@ import useToast from '../../contexts/ToastContext'
 import UserAPI from '../../network/UserAPI'
 import User from '../../types/User'
 import { initalPage } from '../../reducers/PageReducer'
-import P from '../../components/common/P'
+import P from '../../components/common/text/P'
 
 import style from './Page.module.css'
+import { LoadContextProvider } from '../../contexts/LoadContext'
 
 export default function Page() {
 
@@ -29,6 +30,7 @@ export default function Page() {
 	const [page, setPage] = useState<IPage>(initalPage)
 	const [lastEditor, setLastEditor] = useState<User>({ name: 'user_missing', _id: '0'})
 	const [loading, setLoading] = useState(true)
+	const [error, setError] = useState('')
 	const [modalVisible, setModalVisibility] = useState(false)
 
 	const navigate = useNavigate()
@@ -40,8 +42,9 @@ export default function Page() {
 				setPage(page)
 				getLastEditor(page)
 			},
-			() => {
+			err => {
 				toast('Failed to load page', 'error')
+				setError(err + '.')
 			})
 	}, [id])
 
@@ -78,32 +81,29 @@ export default function Page() {
 
 	return (
 		<div style={{ margin: '0 auto', maxWidth: 'var(--page-max-width)' }}>
-			<P loading={loading}>
-					Last edited by {lastEditor.name}
-			</P>
-			<Row className={style.buttonsRow}>
-				<Button
-					outline
-					text='Edit'
-					onClick={() => navigate(location.pathname + '/edit')}
-					icon={<Pencil color='var(--black)' />}
-					loading={loading}
-				/>
-				<Button
-					outline
-					text='Delete'
-					icon={<Trash color='var(--black)' />}
-					onClick={() => setModalVisibility(true)}
-					loading={loading}
-				/>
-				<Button
-					outline
-					text='History'
-					icon={<History color='var(--black)' />}
-					onClick={() => navigate(location.pathname + '/history')}
-					loading={loading}
-				/>
-			</Row>
+			<LoadContextProvider loading={loading} errored={error != ''}>
+				<P> Last edited by {lastEditor.name}</P>
+				<Row className={style.buttonsRow}>
+					<Button
+						outline
+						text='Edit'
+						onClick={() => navigate(location.pathname + '/edit')}
+						icon={<Pencil color='var(--black)' />}
+					/>
+					<Button
+						outline
+						text='Delete'
+						icon={<Trash color='var(--black)' />}
+						onClick={() => setModalVisibility(true)}
+					/>
+					<Button
+						outline
+						text='History'
+						icon={<History color='var(--black)' />}
+						onClick={() => navigate(location.pathname + '/history')}
+					/>
+				</Row>
+			</LoadContextProvider>
 
 			<ConfirmationModal
 				prompt='Are you sure you want to delete this page?'

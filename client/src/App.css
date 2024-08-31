@@ -72,6 +72,10 @@ a {
     animation: loading-animation 500ms linear infinite alternate;
 }
 
+.errored {
+    background-color: rgba(159, 103, 103, 0.2)
+}
+
 @keyframes loading-animation {
   0% {
     background-color: rgba(150,150,150,0.1);

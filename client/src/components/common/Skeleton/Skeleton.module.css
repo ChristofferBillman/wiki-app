@@ -1,0 +1,8 @@
+.skeleton {
+    border-radius: 10px;
+    user-select: none;
+}
+
+.skeleton * {
+    visibility: hidden;
+}

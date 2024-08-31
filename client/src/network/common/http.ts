@@ -97,9 +97,9 @@ async function internalGet<T>(
 				onSuccess(await res.json())
 			}
 		})
-		.catch(e => {
+		.catch((e: TypeError) => {
 			console.log(e)
-			onError('There was a problem:' + e)
+			onError(e.name +  ': ' + e.message)
 		})
 }
 
