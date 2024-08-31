@@ -7,6 +7,7 @@ import Card from '../common/Card'
 import { Column } from '../common/Layout'
 import PlaceholderImg from '../../assets/img/placeholder.jpg'
 import { useMemo } from 'react'
+import Skeleton from '../common/Skeleton'
 
 interface Props {
     page?: Page
@@ -18,7 +19,7 @@ export function PageCard({page, loading=false}: Props) {
 	const navigate = useNavigate()
 	const location = useLocation()
 
-	if(loading || !page) return <Skeleton/>
+	if(loading || !page) return <PageCardSkeleton/>
 
 	const {title, description} = useMemo(() => getTitleAndDescription(page), [page])
 
@@ -36,9 +37,11 @@ export function PageCard({page, loading=false}: Props) {
 	)
 }
 
-function Skeleton() {
+function PageCardSkeleton() {
 	return (
-		<Card style={{width: '400px', maxWidth: '600px', height: '200px'}} loading/>
+		<Skeleton style={{borderRadius: '24px', width: '400px', maxWidth: '600px', height: '225px'}}>
+			<Card/>
+		</Skeleton>
 	)
 }
 
