@@ -2,7 +2,7 @@
 import './App.css'
 
 // React Router
-import { Routes, Route, HashRouter } from 'react-router-dom'
+import { Routes, Route, BrowserRouter } from 'react-router-dom'
 
 // Components
 import Navbar from './components/Navbar'
@@ -30,7 +30,7 @@ import WikiSettings from './pages/WikiSettings'
 
 export default function App() {
 	return (
-		<HashRouter>
+		<BrowserRouter>
 			<UserContextProvider>
 				<ThemeContextProvider>
 					<ToastContextProvider>
@@ -60,6 +60,6 @@ export default function App() {
 					</ToastContextProvider>
 				</ThemeContextProvider>
 			</UserContextProvider>
-		</HashRouter>
+		</BrowserRouter>
 	)
 }
