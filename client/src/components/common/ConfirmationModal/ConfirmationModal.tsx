@@ -1,10 +1,7 @@
-import { CSSProperties, useRef } from 'react'
-import CSSstyle from './Modal.module.css'
-import Card from '../Card'
+import { CSSProperties } from 'react'
 import { Row } from '../Layout'
 import Button from '../Button'
-import useOutsideClick from '../../../hooks/useOutsideClick'
-import TransitionLifecycle from '../TransitionLifecycle'
+import Modal from '../Modal'
 
 interface Props {
 	style?: CSSProperties
@@ -19,30 +16,16 @@ interface Props {
 
 export function ConfirmationModal({ prompt, onCancel, onConfirm, visible, text, cancelText, confirmText}: Props) {
 
-	const ref = useRef(null)
-	useOutsideClick(ref, onCancel)
-
 	return (
-		<TransitionLifecycle
-			willRender={visible}
-			transition={{
-				initial: { opacity: 0, transform: 'translateY(-20px)' },
-				transition: { opacity: 1, transform: 'translateY(0)' },
-				exit: { opacity: 0, transform: 'translateY(20px)' },
-				duration: 200
-			}}
-			style={{zIndex: 1000, position: 'fixed', top:'50%', left:'50%'}}
-		>
-			<Card className={CSSstyle.modal} forwardRef={ref}>
-				<h2 style={{marginBottom: '2rem'}}>{prompt}</h2>
-				<h5 style={{marginBottom: '2rem', width: '80%', alignSelf: 'center'}}>{text}</h5>
-			
-				<Row style={{justifyContent: 'space-around'}}>
-					<Button outline text={cancelText ? cancelText : 'Cancel'} onClick={onCancel}/>
-					
-					<Button color='var(--red)' text={confirmText ? confirmText : 'Confirm'} onClick={onConfirm}/>
-				</Row>
-			</Card>
-		</TransitionLifecycle>
+		<Modal visible={visible} setVisible={onCancel}>
+			<h2 style={{marginBottom: '2rem'}}>{prompt}</h2>
+			<h5 style={{marginBottom: '2rem', width: '80%', alignSelf: 'center'}}>{text}</h5>
+		
+			<Row style={{justifyContent: 'space-around'}}>
+				<Button outline text={cancelText ? cancelText : 'Cancel'} onClick={onCancel}/>
+				
+				<Button color='var(--red)' text={confirmText ? confirmText : 'Confirm'} onClick={onConfirm}/>
+			</Row>
+		</Modal>
 	)
 }
