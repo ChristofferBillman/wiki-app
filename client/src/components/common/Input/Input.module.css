@@ -22,3 +22,15 @@
     border: 1.5px solid var(--primary);
     transition: 50ms;
 }
+
+@media screen and (max-width: 950px) {
+    :root {
+        --page-max-width: 100%;
+    }
+    body {
+        margin: 1rem;
+    }
+    .input {
+        font-size: 1rem;
+    }
+}
