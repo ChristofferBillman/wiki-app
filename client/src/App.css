@@ -68,6 +68,10 @@ a {
     height: fill-available;
 }
 
+.std-padd {
+    padding: 1rem;
+}
+
 .loader {
     animation: loading-animation 500ms linear infinite alternate;
 }
