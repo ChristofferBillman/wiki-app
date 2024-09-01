@@ -19,7 +19,7 @@ async function getMembers(wikiId: string, onSuccess: (arg0: User[]) => void, onE
 	get(`/wiki/${wikiId}/members/`, onSuccess, onError)
 }
 
-async function create(wikiData: Wiki, onSuccess: (arg0: unknown) => void, onError: (arg0: string) => void) {
+async function create(wikiData: Wiki, onSuccess: (arg0: Wiki) => void, onError: (arg0: string) => void) {
 	post(wikiData, '/wiki', onSuccess, onError)
 }
 
