@@ -37,7 +37,9 @@ export default function Home() {
 						{sixElements.map(num => <WikiCard key={num}/>)}
 					</LoadContextProvider>
 				) : (
-					wikis.map(wiki => <WikiCard wiki={wiki} key={wiki._id}/>)
+					wikis.length == 0 ? 
+						<EmptyState name={username}/> : 
+						wikis.map(wiki => <WikiCard wiki={wiki} key={wiki._id}/>)
 				)}
 			</Row>
 		</Column>
@@ -45,3 +47,17 @@ export default function Home() {
 }
 
 const sixElements = [1,2,3,4,5,6]
+
+interface EmptyStateProps {
+	name: string
+}
+
+function EmptyState({name}: EmptyStateProps) {
+	return (
+		<Column>
+			<h2>Wikis that you are a member of will show up here</h2>
+			<p>Create one in the top right corner, or ask a friend to invite <strong>{name}</strong> to theirs</p>
+		</Column>
+	)
+}
+
