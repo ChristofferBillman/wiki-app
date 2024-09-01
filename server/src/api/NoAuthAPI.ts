@@ -46,42 +46,47 @@ export default function NoAuthAPI(app: Application, BASEURL: string) {
     })
 
     // POST (Signup)
-    app.post(BASEURL + '/user', async (req: Request, res: Response) => {
-        const name: string = req.body.name
-        const password: string = req.body.password
-        const wikis: string[] = []
-    
-        if(name == undefined || password == undefined) {
-            res.status(400)
-            res.send()
-            return
-        }
-
-        if(!hasNoWhitespace(password)) {
-            res.status(400).send('Password cannot contain blankspace or be empty.')
-            return
-        }
-
-        if(!hasNoWhitespace(name)) {
-            res.status(400).send('Username cannot contain whitespace or be empty.')
-            return
-        }
-    
-        const existingUser = await User.findOne({ name })
-    
-        if(existingUser !== null) {
-            res.status(409)
-            res.send('Username is taken.')
-            return
-        }
-        const hash = await PassHash.toHash(password)
-    
-        await new User({name, wikis, password: hash}).save()
+    app.post(BASEURL + '/user', async (req: Request, res: Response, next) => {
+        try {
+            const name: string = req.body.name
+            const password: string = req.body.password
+            const wikis: string[] = []
         
-        const { user, token } = await Token.Generate(name, password)
+            if(name == undefined || password == undefined) {
+                res.status(400)
+                res.send()
+                return
+            }
 
-        res.cookie('token', token)
-        res.status(201).json(user)
+            if(!hasNoWhitespace(password)) {
+                res.status(400).send('Password cannot contain blankspace or be empty.')
+                return
+            }
+
+            if(!hasNoWhitespace(name)) {
+                res.status(400).send('Username cannot contain whitespace or be empty.')
+                return
+            }
+        
+            const existingUser = await User.findOne({ name })
+        
+            if(existingUser !== null) {
+                res.status(409)
+                res.send('Username is taken.')
+                return
+            }
+            const hash = await PassHash.toHash(password)
+        
+            await new User({name, wikis, password: hash}).save()
+            
+            const { user, token } = await Token.Generate(name, password)
+
+            res.cookie('token', token)
+            res.status(201).json(user)
+        }
+        catch(err) {
+            next(err)
+        }
     })
 }
 

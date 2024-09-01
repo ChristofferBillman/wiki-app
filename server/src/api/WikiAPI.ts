@@ -52,7 +52,7 @@ export default function WikiAPI(app: Application, BASEURL: string) {
     })
 
     // POST
-    app.post(BASEURL + '/', async (req, res) => {
+    app.post(BASEURL + '/', async (req, res, next) => {
         try {
             const { description, img, name } = req.body
 
@@ -70,8 +70,7 @@ export default function WikiAPI(app: Application, BASEURL: string) {
             const createdWiki: IWiki = await newWiki.save()
             res.status(201).json(createdWiki)
         } catch (error) {
-            console.log(error)
-            res.status(500).send('An error occurred')
+            next(error)
         }
     })
 

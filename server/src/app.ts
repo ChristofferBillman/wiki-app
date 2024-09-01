@@ -11,6 +11,7 @@ import PageHistoryAPI from './api/PageHistoryAPI'
 import SearchAPI from './api/SearchAPI'
 import WikiAPI from './api/WikiAPI'
 import FileAPI from './api/FileAPI'
+import { MongooseValidationErrorHandler } from './middleware/Validation'
 
 GetDatabaseConnection()
 
@@ -44,6 +45,8 @@ PageHistoryAPI(app, BASEURL + '/page/history')
 SearchAPI(app, BASEURL)
 WikiAPI(app, BASEURL + '/wiki')
 FileAPI(app, BASEURL)
+
+app.use(MongooseValidationErrorHandler)
 
 app.get('*', (_, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'client', 'dist', 'index.html'))
