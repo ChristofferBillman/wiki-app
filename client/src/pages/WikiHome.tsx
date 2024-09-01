@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import PageCard from '../components/PageCard'
-import { Row } from '../components/common/Layout'
+import { Column, Row } from '../components/common/Layout'
 import Page from '../types/Page'
 import PageAPI from '../network/PageAPI'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -128,9 +128,9 @@ export default function WikiHome() {
 					/>
 				)}
 			</LoadContextProvider>
-
+			
+			{/* Everything below is a mess and should be refactored */}
 			<LoadContextProvider loading={pagesLoading}>
-				
 				{error != '' ? (
 					<>
 						<h1 style={{margin: '35rem 0 1rem 0'}}> Oops! </h1>
@@ -153,7 +153,8 @@ export default function WikiHome() {
 							}}
 						>
 							{!pagesLoading ? (
-								pages.map(page => <PageCard key={page._id} page={page}/>)
+								pages.length == 0 ? <EmptyState/> : (
+									pages.map(page => <PageCard key={page._id} page={page}/>))
 							): (
 								sixElements.map(el => <PageCard key={el} loading/>)
 							)}
@@ -166,3 +167,12 @@ export default function WikiHome() {
 }
 
 const sixElements = [1,2,3,4,5,6]
+
+function EmptyState() {
+	return (
+		<Column>
+			<h2>There are no pages in this wiki</h2>
+			<p>Create one with the blue button above.</p>
+		</Column>
+	)
+}
