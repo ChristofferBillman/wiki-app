@@ -1,23 +1,23 @@
 import { useNavigate } from 'react-router-dom'
 
-import { Column, Filler, Row } from '../components/common/Layout'
-import Button from '../components/common/Button'
-import { Arrow, Plus } from '../assets/Icons'
+import { Column, Filler, Row } from '../../components/common/Layout'
+import Button from '../../components/common/Button'
+import { Arrow, Plus } from '../../assets/Icons'
 
-import Promo1 from '../assets/img/promo1.png'
-import Promo2 from '../assets/img/promo2.png'
-import Promo3 from '../assets/img/promo3.png'
-import Promo4 from '../assets/img/promo4.png'
+import Promo1 from '../../assets/img/promo1.png'
+import Promo2 from '../../assets/img/promo2.png'
+import Promo3 from '../../assets/img/promo3.png'
+import Promo4 from '../../assets/img/promo4.png'
 
+import style from './Landing.module.css'
 
-export default function Landing() {
+export function Landing() {
 
 	const navigate = useNavigate()
 
 	return (
 		<>
-			<Row>
-				<p>stocken.wiki</p>
+			<Row className={style.navbar}>
 				<Filler/>
 				<Button
 					text='Create an account'
@@ -34,24 +34,18 @@ export default function Landing() {
 					onClick={() => navigate('/login')}
 				/>
 			</Row>
-			<Column style={{ margin: '0 auto', maxWidth: '1500px'}}>
-				<div style={{height: '16rem'}}/>
-
-				<h1 style={{fontSize: '64px'}}>
+			<Column className={style.container}>
+				<h1 className={style.hero}>
 					Looking for a place where you<br/>
 					can make worlds come alive?<br/>
 					This is it.
 				</h1>
-
-				<div style={{height: '16rem'}}/>
 				
 				<PromoSection
 					img={Promo1}
 					title='One place for all your worldbuilding'
 					description='Collect and document anything you like in an easy to use and simple interface.'
 				/>
-
-				<div style={{height: '8rem'}}/>
 
 				<PromoSection
 					img={Promo2}
@@ -60,16 +54,12 @@ export default function Landing() {
 					description="All edits and changes to pages are saved and can be viewed at any time. Regret an edit? Or someone made changes you didn't like? Just restore the page to a previous version with a few clicks - it's like nothing happened."
 				/>
 
-				<div style={{height: '8rem'}}/>
-
 				<PromoSection
 					img={Promo3}
 					imgPlacement='right'
 					title='Collaborate and edit pages together'
 					description='Invite friends and collaborators to your wiki. They can view, edit and create new pages, so that your world evolves and changes even further.'
 				/>
-
-				<div style={{height: '8rem'}}/>
 
 				<PromoSection
 					img={Promo4}
@@ -80,17 +70,18 @@ export default function Landing() {
 
 			</Column>
 
-			<Column style={{background: 'var(--black)', height: '400px', margin: '0 -2rem -2rem', padding: '4em', alignItems: 'center'}}>
-				<h1 style={{color: 'var(--white)', fontSize: '32px'}}>What are you waiting for?</h1>
-				<div style={{height: '2rem'}}/>
+			<Column className={style.footer}>
+				<h1 className={style.CTA}>What are you waiting for?</h1>
+
 				<Button
 					text='Create an account'
 					color='var(--primary)'
 					icon={<Plus/>}
 					onClick={() => navigate('/signup')}
 				/>
-				<div style={{height: '2rem'}}/>
-				<p style={{color: 'var(--white)'}}>Already have an account?</p>
+
+				<p style={{color: 'var(--white)'}}>Or</p>
+
 				<Button
 					text='Log in'
 					color='var(--white)'
@@ -114,9 +105,9 @@ function PromoSection({img, title, description, imgPlacement='right'}: PromoSect
 	const imgSide = imgPlacement == 'left' ? 'row-reverse' : 'row'
 
 	return (
-		<Row style={{justifyContent: 'space-between', flexDirection: imgSide}}>
-			<Column style={{justifyContent: 'center', width: '400px'}}>
-				<h1 style={{fontSize: '32px'}}>{title}</h1>
+		<Row className={style.promoRow}style={{flexDirection: imgSide}}>
+			<Column className={style.promoCol}>
+				<h1>{title}</h1>
 				<p>{description}</p>
 			</Column>
 

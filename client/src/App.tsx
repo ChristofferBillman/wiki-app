@@ -24,7 +24,7 @@ import Settings from './pages/Settings'
 import ChangePassword from './pages/ChangePassword.tsx'
 import ChangeUsername from './pages/ChangeUsername.tsx'
 import WikiHome from './pages/WikiHome.tsx'
-import Landing from './pages/Landing.tsx'
+import Landing from './pages/Landing'
 import WikiCreator from './pages/WikiCreator.tsx'
 import WikiSettings from './pages/WikiSettings'
 

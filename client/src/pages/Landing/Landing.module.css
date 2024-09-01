@@ -1,0 +1,54 @@
+.container {
+    margin: 0 auto;
+    max-width: 1500px;
+    gap: 8rem;
+}
+
+.hero {
+    font-size: 64px;
+    margin: 16rem 0 16rem 0;
+}
+
+.footer {
+    background: var(--black);
+    height: 400px;
+    margin: 0 -2rem -2rem;
+    padding: 4rem;
+    align-items: center
+}
+
+.CTA {
+    color: var(--white);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.promoCol {
+    justify-content: center;
+    width: 400px;
+}
+
+.promoRow {
+    justify-content: space-between;
+}
+
+.navbar {
+    flex-wrap: wrap;
+}
+
+@media screen and (max-width: 950px) {
+    .container {
+        gap: 4rem;
+    }
+
+    .promoRow {
+        flex-direction: column !important;
+    }
+
+    .promoCol {
+        width: 100%;
+    }
+    .hero {
+        font-size: 32px;
+    }
+}
