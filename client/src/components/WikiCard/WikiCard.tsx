@@ -26,7 +26,7 @@ export function WikiCard({wiki, loading, errored}: Props) {
 	return (
 		<Card
 			style={{width: '400px', maxWidth: '600px'}}
-			onClick={() => navigate('/wiki/' + wiki.name)}
+			onClick={() => navigate('/wiki/' + encodeURIComponent(wiki.name))}
 		>
 			<CardImage src={getImage(wiki)}/>
 			<Column className='std-padd'>

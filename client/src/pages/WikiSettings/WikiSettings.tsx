@@ -108,7 +108,7 @@ export function WikiSettings() {
 					text='Return to Wiki'
 					outline
 					color='var(--white)'
-					onClick={() => navigate('/wiki/' + wiki.name)}
+					onClick={() => navigate('/wiki/' + encodeURIComponent(wiki.name))}
 				/>
 			</Row>
 
