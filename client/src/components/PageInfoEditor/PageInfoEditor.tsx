@@ -60,7 +60,7 @@ export function PageInfoEditor({ page, dispatch}: Props) {
 				</StrictModeDroppable>
 			</DragDropContext>
 
-			<Row style={{justifyContent: 'center', padding: 0}}>
+			<Row style={{justifyContent: 'center'}}>
 				<Button
 					outline
 					text={page.infoSection.data.length === 0 ? 'Add info box' : 'Add Field'}
