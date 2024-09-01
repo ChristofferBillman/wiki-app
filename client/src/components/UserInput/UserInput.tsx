@@ -9,6 +9,7 @@ import Button from '../common/Button'
 import { Plus, Trash } from '../../assets/Icons'
 
 import inputStyle from '../common/Input/Input.module.css'
+import Skeleton from '../common/Skeleton'
 
 interface Props {
 	addedUsers: User[]
@@ -54,7 +55,7 @@ export function UserInput({addedUsers, setAddedUsers, placeholder = 'Click and t
 	}
 
 	return (
-		<>
+		<Skeleton>
 			<Column
 				className={inputStyle.input}
 				style={{ maxHeight: '1000px', height: '105px'}}
@@ -71,7 +72,7 @@ export function UserInput({addedUsers, setAddedUsers, placeholder = 'Click and t
 					}}
 				/>
 
-				<Row style={{padding: 0}}>
+				<Row>
 					<>
 						{addedUsers.map(user => (
 							<Button
@@ -96,8 +97,6 @@ export function UserInput({addedUsers, setAddedUsers, placeholder = 'Click and t
 					</>
 				</Row>
 			</Column>
-
-
-		</>
+		</Skeleton>
 	)
 }

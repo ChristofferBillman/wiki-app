@@ -8,15 +8,13 @@ interface Props {
 	loading?: boolean
 }
 
-export function Column({children, style, padding = true, className, loading}: Props) {
-
-	const paddingStyle = padding ? CSSstyle.defaultPadding : ''
+export function Column({children, style, className, loading}: Props) {
 
 	if(loading) return (
-		<div className={`${CSSstyle.column} ${paddingStyle} ${CSSstyle.loading} loader`} style={style}/>
+		<div className={`${CSSstyle.column} ${CSSstyle.loading} loader ${className}`} style={style}/>
 	)
 	return (
-		<div className={`${CSSstyle.column} ${paddingStyle} ${className}`} style={style}>
+		<div className={`${CSSstyle.column} ${className}`} style={style}>
 			{children}
 		</div>
 	)

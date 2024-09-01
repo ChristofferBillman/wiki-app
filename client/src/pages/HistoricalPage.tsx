@@ -34,7 +34,6 @@ export default function HistoricalPage() {
 		PageHistoryAPI.record(id, Number(version),
 			async pageRecord => {
 				setPageRecord(pageRecord)
-				console.log(pageRecord)
 				getEditor(pageRecord)
 			},
 			() => {
@@ -43,8 +42,6 @@ export default function HistoricalPage() {
 	}, [])
 
 	const getEditor = (page: PageRecord) => {
-
-		console.log(page.author)
 		const id = page.author
 
 		UserAPI.byId(id,
@@ -69,26 +66,27 @@ export default function HistoricalPage() {
 	if (loading) return <Skeleton />
 
 	return (
-		<div style={{ margin: '0 auto', maxWidth: 'var(--page-max-width)' }}>
-			<h5> Authored {getTimeSince(getEditMillis())} by {editor.name}</h5>
+		<div style={{ margin: '0 auto', width: 'var(--page-max-width)' }}>
 			<Row style={{ alignItems: 'center', flexWrap: 'wrap', padding: '1rem 0 1rem 0' }}>
-				<Filler />
+				<h5> Authored {getTimeSince(getEditMillis())} by {editor.name}</h5>
 
-				<Button
-					outline
-					text='Restore'
-					icon={<Restore color='var(--black)' />}
-					onClick={handleRestore}
-				/>
-				<Button
-					outline
-					text='Back to History'
-					icon={<History color='var(--black)' />}
-					onClick={() => navigate(-1)}
-				/>
+				<Row style={{justifyContent: 'flex-end', flex: 1}}>
+					<Button
+						outline
+						text='Restore'
+						icon={<Restore color='var(--black)' />}
+						onClick={handleRestore}
+					/>
+					<Button
+						outline
+						text='Back to History'
+						icon={<History color='var(--black)' />}
+						onClick={() => navigate(-1)}
+					/>
+				</Row>
 			</Row>
 
-			<Card style={{ margin: '0 auto' }}>
+			<Card style={{ margin: '0 auto', width: 'var(--page-max-width)' }}>
 				<Row style={{gap: '4rem', padding: '2rem'}} className={PageStyle.pageContainer}>
 					<Column style={{flex: 4, padding: 0}}>
 						<PageContentSection markdown={pageRecord.page.content} />

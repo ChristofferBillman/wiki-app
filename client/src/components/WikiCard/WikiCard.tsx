@@ -29,7 +29,7 @@ export function WikiCard({wiki, loading, errored}: Props) {
 			onClick={() => navigate('/wiki/' + wiki.name)}
 		>
 			<CardImage src={getImage(wiki)}/>
-			<Column>
+			<Column className='std-padd'>
 				<h4>{wiki.name}</h4>
 				<p>{wiki.description}</p>
 			</Column>

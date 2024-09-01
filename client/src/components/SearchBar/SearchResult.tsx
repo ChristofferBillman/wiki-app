@@ -14,7 +14,7 @@ export function SearchResult({page}: Props) {
 	const description = page.content.replace(/^#+\s/, '').split('\n')[1]
 
 	return (
-		<Row id={style.searchResult} style={{alignItems: 'center'}}>
+		<Row id={style.searchResult} style={{alignItems: 'center', padding: '1rem'}}>
 			<div>
 				<PageIcon color='var(--black)'/>
 			</div>

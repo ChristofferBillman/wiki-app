@@ -1,7 +1,7 @@
 import { CSSProperties, useRef } from 'react'
 import CSSstyle from './Modal.module.css'
 import Card from '../Card'
-import { Filler, Row } from '../Layout'
+import { Row } from '../Layout'
 import Button from '../Button'
 import useOutsideClick from '../../../hooks/useOutsideClick'
 import TransitionLifecycle from '../TransitionLifecycle'
@@ -34,12 +34,12 @@ export function ConfirmationModal({ prompt, onCancel, onConfirm, visible, text, 
 			style={{zIndex: 1000, position: 'fixed', top:'50%', left:'50%'}}
 		>
 			<Card className={CSSstyle.modal} forwardRef={ref}>
-				<h2>{prompt}</h2>
-				<h5>{text}</h5>
-				<Filler/>
-				<Row>
+				<h2 style={{marginBottom: '2rem'}}>{prompt}</h2>
+				<h5 style={{marginBottom: '2rem', width: '80%', alignSelf: 'center'}}>{text}</h5>
+			
+				<Row style={{justifyContent: 'space-around'}}>
 					<Button outline text={cancelText ? cancelText : 'Cancel'} onClick={onCancel}/>
-					<Filler/>
+					
 					<Button color='var(--red)' text={confirmText ? confirmText : 'Confirm'} onClick={onConfirm}/>
 				</Row>
 			</Card>

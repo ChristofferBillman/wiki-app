@@ -69,38 +69,39 @@ export default function PageEditor() {
 			/>
 			
 			<div style={{ margin: '0 auto', maxWidth: 'var(--page-max-width)' }}>
-				<h4 style={{color: 'var(--gray)'}}> Editing: {title} </h4>
 				<Row style={{ alignItems: 'center', flexWrap: 'wrap', padding: '1rem 0 1rem 0' }}>
+					<h4 style={{color: 'var(--gray)'}}> Editing: {title} </h4>
 					<Filler />
-					
-					{!hasChanged(refencePage, page) ? 
+					<Row style={{justifyContent: 'flex-end', flex: 1}}>
+						{!hasChanged(refencePage, page) ? 
+							<Button
+								outline
+								text='Discard Changes'
+								icon={<Trash color='var(--black)'/>}
+								onClick={() => setModalVisibility(true)}
+							/>
+							:
+							<Button
+								outline
+								text='Cancel'
+								onClick={() => navigate(-1)}
+							/>
+						}
 						<Button
-							outline
-							text='Discard Changes'
-							icon={<Trash color='var(--black)'/>}
-							onClick={() => setModalVisibility(true)}
+							text='Save Changes'
+							icon={<Floppy color='var(--white)' />}
+							color='var(--primary)'
+							onClick={onSubmit}
 						/>
-						:
-						<Button
-							outline
-							text='Cancel'
-							onClick={() => navigate(-1)}
-						/>
-					}
-					<Button
-						text='Save Changes'
-						icon={<Floppy color='var(--white)' />}
-						color='var(--primary)'
-						onClick={onSubmit}
-					/>
+					</Row>
 				</Row>
 
-				<Card style={{border: 'dashed 1.5px var(--gray)', margin: '0 auto', width: '100%'}}>
+				<Card style={{border: 'dashed 1.5px var(--gray)', margin: '0 auto', width: '100%', padding: '2rem', boxSizing: 'border-box'}}>
 					<Row className={style.editor}>
-						<Column style={{flex: 1, padding: 0}}>
+						<Column style={{flex: 1}}>
 							<PageContentEditor page={page} dispatch={dispatch} />
 						</Column>
-						<Column style={{flex: 1, padding: 0}}>
+						<Column style={{flex: 1 }}>
 							<PageInfoEditor page={page} dispatch={dispatch}/>
 						</Column>
 					</Row>

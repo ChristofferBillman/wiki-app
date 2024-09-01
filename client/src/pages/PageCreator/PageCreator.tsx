@@ -47,29 +47,31 @@ export default function PageCreator() {
 	
 	return (
 		<div style={{ margin: '0 auto', maxWidth: 'var(--page-max-width)' }}>
-			<h4 style={{color: 'var(--gray)'}}> Creating: {title} </h4>
 			<Row style={{ alignItems: 'center', flexWrap: 'wrap', padding: '1rem 0 1rem 0' }}>
+				<h4 style={{color: 'var(--gray)'}}> Creating: {title} </h4>
 				<Filler/>
-				<Button
-					outline
-					text='Discard & Exit'
-					icon={<Trash color='var(--black)'/>}
-					onClick={() => navigate(-1)}
-				/>
-				<Button
-					text='Submit'
-					icon={<Floppy color='var(--white)' />}
-					color='var(--primary)'
-					onClick={onSubmit}
-				/>
+				<Row style={{justifyContent: 'flex-end', flex: 1}}>
+					<Button
+						outline
+						text='Discard & Exit'
+						icon={<Trash color='var(--black)'/>}
+						onClick={() => navigate(-1)}
+					/>
+					<Button
+						text='Submit'
+						icon={<Floppy color='var(--white)' />}
+						color='var(--primary)'
+						onClick={onSubmit}
+					/>
+				</Row>
 			</Row>
 
-			<Card style={{border: 'dashed 1.5px var(--gray)', width: '100%' }}>
+			<Card style={{border: 'dashed 1.5px var(--gray)', width: '100%', padding: '2rem', boxSizing: 'border-box' }}>
 				<Row className={style.editor}>
-					<Column style={{flex: 1, padding: 0}}>
+					<Column style={{flex: 1}}>
 						<PageContentEditor page={page} dispatch={dispatch} />
 					</Column>
-					<Column style={{flex: 1, padding: 0}}>
+					<Column style={{flex: 1}}>
 						<PageInfoEditor page={page} dispatch={dispatch} />
 					</Column>
 				</Row>

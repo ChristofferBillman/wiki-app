@@ -49,13 +49,11 @@ export default function Page() {
 	}, [id])
 
 	const getLastEditor = (page: IPage) => {
-		console.log(page)
 		if (page.authors.length === 0) {
 			setLoading(false)
 			return
 		}
 		const id = page.authors[page.authors.length - 1]
-		console.log(id)
 
 		UserAPI.byId(id,
 			user => {
@@ -82,26 +80,28 @@ export default function Page() {
 	return (
 		<div style={{ margin: '0 auto', maxWidth: 'var(--page-max-width)' }}>
 			<LoadContextProvider loading={loading} errored={error != ''}>
-				<P> Last edited by {lastEditor.name}</P>
-				<Row className={style.buttonsRow}>
-					<Button
-						outline
-						text='Edit'
-						onClick={() => navigate(location.pathname + '/edit')}
-						icon={<Pencil color='var(--black)' />}
-					/>
-					<Button
-						outline
-						text='Delete'
-						icon={<Trash color='var(--black)' />}
-						onClick={() => setModalVisibility(true)}
-					/>
-					<Button
-						outline
-						text='History'
-						icon={<History color='var(--black)' />}
-						onClick={() => navigate(location.pathname + '/history')}
-					/>
+				<Row className={style.topRow}>
+					<P>Last edited by {lastEditor.name}</P>
+					<Row className={style.buttonsRow}>
+						<Button
+							outline
+							text='Edit'
+							onClick={() => navigate(location.pathname + '/edit')}
+							icon={<Pencil color='var(--black)' />}
+						/>
+						<Button
+							outline
+							text='Delete'
+							icon={<Trash color='var(--black)' />}
+							onClick={() => setModalVisibility(true)}
+						/>
+						<Button
+							outline
+							text='History'
+							icon={<History color='var(--black)' />}
+							onClick={() => navigate(location.pathname + '/history')}
+						/>
+					</Row>
 				</Row>
 			</LoadContextProvider>
 
@@ -115,10 +115,10 @@ export default function Page() {
 
 			<Card style={{ margin: '0 auto', width: 'var(--page-max-width)', minHeight: '100vh' }}>
 				<Row className={style.pageContainer}>
-					<Column style={{flex: 4, padding: 0}} loading={loading}>
+					<Column style={{flex: 4}} loading={loading}>
 						<PageContentSection markdown={page.content} />
 					</Column>
-					<Column style={{flex: 3, padding: 0}} loading={loading}>
+					<Column style={{flex: 3}} loading={loading}>
 						<PageInfoSection infoSection={page.infoSection} />
 					</Column>
 				</Row>

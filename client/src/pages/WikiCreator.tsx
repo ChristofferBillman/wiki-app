@@ -48,7 +48,7 @@ export default function WikiCreator() {
 		<div style={{ margin: '0 auto', maxWidth: '500px' }}>
 			<h1 style={{marginBottom: '1rem'}}>Create Wiki</h1>
 
-			<Card style={{ border: 'dashed 1.5px var(--gray)', width: '100%' }}>
+			<Card style={{ border: 'dashed 1.5px var(--gray)', width: '100%', padding: '1rem', boxSizing: 'border-box' }}>
 				<Column>
 					<Input
 						placeholder='Wiki name'

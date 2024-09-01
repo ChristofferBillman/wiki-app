@@ -27,7 +27,6 @@ export default function PageHistory() {
 		PageHistoryAPI.history(id,
 			async history => {
 				setHistory(history)
-				console.log(history)
 				setLoading(false)
 			},
 			() => {
@@ -43,19 +42,21 @@ export default function PageHistory() {
 
 	return (
 		<div style={{ margin: '0 auto', maxWidth: 'var(--page-max-width)' }}>
-			<h5> Version History of {title} </h5>
-			<Row style={{ alignItems: 'center', padding: '1rem 0 1rem 0' }}>
+			<Row style={{ alignItems: 'center', flexWrap: 'wrap', padding: '1rem 0 1rem 0' }}>
+				<h5> Version History of {title} </h5>
 				<Filler/>
-				<Button
-					outline
-					text='Back to Page'
-					onClick={() => navigate(-1)}
-				/>
+				<Row style={{justifyContent: 'flex-end', flex: 1}}>
+					<Button
+						outline
+						text='Back to Page'
+						onClick={() => navigate(-1)}
+					/>
+				</Row>
 			</Row>
 
-			<Card style={{ margin: '0 auto' }}>
-				<Row style={{ width: 'var(--page-max-width', boxSizing: 'border-box' }}>
-					<Column style={{ padding: 0 }}>
+			<Card style={{ margin: '0 auto', padding: '1rem', boxSizing: 'border-box',width: 'var(--page-max-width)'}}>
+				<Row>
+					<Column style={{width: '100%'}}>
 						{history.map((record: PageRecord) => <PageRecordListItem key={record.time} record={record}/>)}
 					</Column>
 				</Row>
@@ -79,9 +80,11 @@ function PageRecordListItem({record}: EditListItemProps): JSX.Element {
 	})
 
 	return (
-		<Row style={{alignItems: 'center', padding: 0, flexWrap: 'wrap'}}>
-			<h4>{user}</h4>
-			<p style={{margin: 0}}>{getTimeSince(record.time)}</p>
+		<Row style={{ flexWrap: 'wrap', justifyContent: 'space-between'}}>
+			<Row style={{alignItems: 'center'}}>
+				<h4>{user}</h4>
+				<p style={{margin: 0}}>{getTimeSince(record.time)}</p>
+			</Row>
 			<Button
 				text='View this version'
 				outline

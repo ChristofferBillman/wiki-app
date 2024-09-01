@@ -10,7 +10,7 @@ interface Props {
 
 export function Row({children, style, className, id, forwardRef}: Props) {
 	return (
-		<div className={`${CSSstyle.row} ${CSSstyle.defaultPadding} ${className}`}
+		<div className={`${CSSstyle.row} ${className}`}
 			style={style} id={id} ref={forwardRef}
 		>
 			{children}

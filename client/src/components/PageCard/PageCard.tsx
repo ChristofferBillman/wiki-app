@@ -29,7 +29,7 @@ export function PageCard({page, loading=false}: Props) {
 			onClick={() => navigate(location.pathname + '/page/' + page._id)}
 		>
 			<CardImage src={getImage(page)}/>
-			<Column>
+			<Column className='std-padd'>
 				<h4>{title}</h4>
 				<p>{description}</p>
 			</Column>

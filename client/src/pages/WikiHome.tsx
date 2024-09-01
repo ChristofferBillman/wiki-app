@@ -133,7 +133,7 @@ export default function WikiHome() {
 				
 				{error != '' ? (
 					<>
-						<h1 style={{margin: '33rem 0 1rem 0'}}> Oops! </h1>
+						<h1 style={{margin: '35rem 0 1rem 0'}}> Oops! </h1>
 
 						<h2>
 							Looks like something went wrong, double check your internet connection and reload the page.
@@ -143,7 +143,7 @@ export default function WikiHome() {
 					</>
 				) : (
 					<>
-						<h1 style={{margin: '33rem 0 1rem 0'}}> All Pages </h1>
+						<h1 style={{margin: '35rem 0 1rem 0'}}> All Pages </h1>
 
 						<Row
 							style={{
