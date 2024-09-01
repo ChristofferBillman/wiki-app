@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 // Internal dependencies
 import { Column, Row } from '../../components/common/Layout'
-import { Pencil, Trash, History } from '../../assets/Icons'
+import { Pencil, Trash, History, Arrow } from '../../assets/Icons'
 import Button from '../../components/common/Button'
 import Card from '../../components/common/Card'
 import PageContentSection from '../../components/PageContentSection'
@@ -35,6 +35,7 @@ export default function Page() {
 
 	const navigate = useNavigate()
 	const location = useLocation()
+	const { wikiname } = useParams()
 
 	useEffect(() => {
 		PageAPI.byId(id,
@@ -100,6 +101,12 @@ export default function Page() {
 							text='History'
 							icon={<History color='var(--black)' />}
 							onClick={() => navigate(location.pathname + '/history')}
+						/>
+						<Button
+							outline
+							text='Return to Wiki'
+							icon={<Arrow color='var(--black)' direction='right'/>}
+							onClick={() => navigate('/wiki/' + wikiname)}
 						/>
 					</Row>
 				</Row>
