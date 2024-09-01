@@ -10,10 +10,20 @@ import Promo3 from '../../assets/img/promo3.png'
 import Promo4 from '../../assets/img/promo4.png'
 
 import style from './Landing.module.css'
+import useUser from '../../contexts/UserContext'
+import { useEffect } from 'react'
 
 export function Landing() {
 
 	const navigate = useNavigate()
+
+	const { user } = useUser()
+
+	useEffect(() => {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		if(user != 'unset') navigate('/home')
+	},[])
 
 	return (
 		<>

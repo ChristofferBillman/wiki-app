@@ -69,7 +69,7 @@ export default function WikiCreator() {
 						wikiAPI.updateMembers(createdWiki._id, members.map(user => user._id),
 							() => {
 								toast('Successfully created wiki', 'success')
-								navigate('/wiki/' + createdWiki.name)
+								navigate('/wiki/' + encodeURIComponent(createdWiki.name))
 							},
 							err => toast(err, 'error')
 						)
