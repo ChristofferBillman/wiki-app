@@ -20,9 +20,7 @@ export function Landing() {
 	const { user } = useUser()
 
 	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		if(user != 'unset') navigate('/home')
+		if(user) navigate('/home')
 	},[])
 
 	return (

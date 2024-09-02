@@ -3,14 +3,14 @@ import User from '../types/User'
 import useLocalStorage from '../hooks/useLocalStorage'
 
 interface UserContext {
-	user: User
+	user: User | undefined
 	setUser: Dispatch<SetStateAction<User | undefined>>
 	reset: () => void
 }
 
 // Create context
 const userContext = createContext<UserContext>({
-	user: {_id: 'NOID', name: 'no_name'},
+	user: undefined,
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	setUser: () => {},
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -23,7 +23,7 @@ interface Props {
 // Setup and export provider
 export function UserContextProvider({children}: Props): JSX.Element {
 
-	const [user, setUser] = useLocalStorage('user','unset')
+	const [user, setUser] = useLocalStorage('user', undefined)
 
 	const reset = () => {
 		localStorage.removeItem('user')

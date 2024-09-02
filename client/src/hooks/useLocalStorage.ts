@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const useLocalStorage = (key: string, defaultValue: string) => {
+const useLocalStorage = (key: string, defaultValue: string | undefined) => {
 	// Create state variable to store
 	// localStorage value in state
 	const [localStorageValue, setLocalStorageValue] = useState(() => {
