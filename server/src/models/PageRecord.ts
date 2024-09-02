@@ -1,5 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose'
-import {IPage} from "./Page";
+import { composeMongoose } from 'graphql-compose-mongoose'
+import timestamps from 'mongoose-timestamp'
+
+import {IPage} from "./Page"
 
 export interface IPageRecord extends Document {
     page: IPage
@@ -8,11 +11,27 @@ export interface IPageRecord extends Document {
     author: string
 }
 
-const pageRecordSchema: Schema<IPageRecord> = new Schema({
-    page: { type: Object, required: true },
-    versionNumber: {type: Number, required: true},
-    time: {type: Number, required: true},
-    author: {type: String, required: true},
+const PageRecordSchema: Schema<IPageRecord> = new Schema({
+    page: {
+        type: Object,
+        required: true 
+    },
+    versionNumber: {
+        type: Number,
+        required: true
+    },
+    time: {
+        type: Number,
+        required: true
+    },
+    author: {
+        type: String,
+        required: true
+    },
 })
 
-export default mongoose.model<IPageRecord>('PageRecord', pageRecordSchema)
+PageRecordSchema.plugin(timestamps)
+PageRecordSchema.index({ createdAt: 1, updatedAt: 1 })
+
+export const PageRecord = mongoose.model('PageRecord', PageRecordSchema)
+export const PageRecordTC = composeMongoose(PageRecord)

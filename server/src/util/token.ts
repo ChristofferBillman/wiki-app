@@ -1,6 +1,6 @@
-import { PassHash } from "./PassHash";
-import { Request, Response, Next } from 'express'
-import User, { IUser } from "./models/User";
+import { PassHash } from './passhash'
+import { Request, Response } from 'express'
+import { User, IUser } from '../models/User'
 
 export default class Token {
     static DELIMITER = '_'
@@ -27,7 +27,7 @@ export default class Token {
      * @param next Express next function
      * @returns void
      */
-    static async VerifyAndAddIdToReq(req: Request, res: Response, next: Next) {
+    static async VerifyAndAddIdToReq(req: Request, res: Response, next) {
         const token = req.cookies.token
 
         if (token == undefined) {

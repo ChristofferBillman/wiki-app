@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document, Types } from 'mongoose'
+import createModel from './createmodel'
 
 export interface InfoSectionStatistic {
     key: string
@@ -11,15 +12,29 @@ export interface InfoSection {
 export interface IPage extends Document {
     content: string
     infoSection: InfoSection
-    authors: string[]
-    wikiId: string
+    authors: Types.ObjectId[]
+    wikiId: Types.ObjectId
 }
 
-const pageSchema: Schema<IPage> = new Schema({
-    content: { type: String, required: true },
-    infoSection: { type: Object, required: true },
-    authors: [{ type: String, required: true }],
-    wikiId: { type: String, required: true }
-});
+const PageSchema: Schema<IPage> = new Schema({
+    content: {
+        type: String,
+        required: true
+    },
+    infoSection: {
+        type: Object,
+        required: true
+    },
+    authors: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }],
+    wikiId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Wiki',
+        required: true 
+    }
+})
 
-export default mongoose.model<IPage>('Page', pageSchema)
+export const {model: PageModel, TC: PageTC} = createModel('Page', PageSchema)

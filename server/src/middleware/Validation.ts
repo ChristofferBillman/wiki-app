@@ -1,4 +1,4 @@
-import { MongooseError } from "mongoose";
+import { MongooseError } from 'mongoose'
 
 export function MongooseValidationErrorHandler(err, req, res, next) {
     if (err.name === 'ValidationError') {
