@@ -1,33 +1,34 @@
-import { PassHash } from './passhash'
 import { Request, Response } from 'express'
-import { User, IUser } from '../models/User'
+import { UserModel as User, IUser } from '../models/User'
+import { randomBytes, scrypt } from 'crypto'
+import { promisify } from 'util'
 
-export default class Token {
-    static DELIMITER = '_'
+export default class Authentication {
+    static TOKEN_DELIMITER = '_'
     /**
      * Checks if a given token on the form [guid].[password hash] is valid.
      */
-    static async Verify(token: string): Promise<boolean> {
-        const [id, password] = token.split(Token.DELIMITER)
+    static async VerifyToken(token: string): Promise<boolean> {
+        const [id, password] = token.split(Authentication.TOKEN_DELIMITER)
 
-        const player: IUser = await User.findOne({ _id: id })
+        const user: IUser = await User.findOne({ _id: id })
 
-        if (player == null) {
+        if (user == null) {
             return false
         }
 
-        return player.password == password
+        return user.password == password
     }
     /**
      * Middleware for express that checks for the presence of a valid token in cookies.
      * If no valid token is found, a 401 (Unauthorized) status is sent.
-     * If valid token is found, the Id-part of it is added to the request object as req.userId.
+     * If valid token is found, the id is used to lookup the user, which is added to the request object as req.user.
      * @param req Express request
      * @param res Expess response
      * @param next Express next function
      * @returns void
      */
-    static async VerifyAndAddIdToReq(req: Request, res: Response, next) {
+    static async VerifyTokenAndAddUserToReq(req: Request, res: Response, next) {
         const token = req.cookies.token
 
         if (token == undefined) {
@@ -36,16 +37,16 @@ export default class Token {
             return
         }
 
-        const authenticated: boolean = await Token.Verify(token)
+        const authenticated: boolean = await Authentication.VerifyToken(token)
 
         if (!authenticated) {
             res.status(401)
             res.send('Invalid token.')
             return
         }
-        // Set guid on request so that other controllers can use it.
-        const [id, _] = token.split(Token.DELIMITER)
-        req.userId = id
+        // Set req.user so that next can use it for authorization.
+        const [id, _] = token.split(Authentication.TOKEN_DELIMITER)
+        req.user = await User.findById(id)
         next()
     }
     /**
@@ -54,7 +55,7 @@ export default class Token {
      * @param guid The GUID of the player to generate a token for.
      * @returns A token or Nothing.
      */
-    static async Generate(name: string, cleartextPassword: string): Promise<{user: IUser, token: string} | null> {
+    static async GenerateToken(name: string, cleartextPassword: string): Promise<{user: IUser, token: string} | null> {
 
         // Find a player by name, CASE INSENSITIVE.
         const user: IUser = await User.findOne({ name: { $regex: new RegExp('^' + name + '$', 'i') } })
@@ -72,6 +73,20 @@ export default class Token {
         }
 
         const hash: string = user.password
-        return {user, token: user._id + Token.DELIMITER + hash}
+        return {user, token: user._id + Authentication.TOKEN_DELIMITER + hash}
+    }
+}
+
+export class PassHash {
+    public static async toHash(password: string): Promise<string> {
+        const salt = randomBytes(8).toString('hex');
+        const buf = (await promisify(scrypt)(password, salt, 64)) as Buffer;
+        return `${buf.toString('hex')}.${salt}`;
+    }
+
+    public static async compare(storedPassword: string, suppliedPassword: string): Promise<boolean> {
+        const [hashedPassword, salt] = storedPassword.split('.');
+        const buf = (await promisify(scrypt)(suppliedPassword, salt, 64)) as Buffer;
+        return buf.toString('hex') === hashedPassword;
     }
 }

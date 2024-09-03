@@ -1,4 +1,13 @@
 import { WikiTC } from '../models/Wiki'
+import Authorization from '../util/authorization'
+
+const rules = {
+    admin: { allowAll: true },
+    user: {
+        query: true,
+        mutate: (rp) => rp.context.user._id.toString() === rp.args.record._id.toString(),
+    }
+}
 
 const WikiQuery = {
     wikiById: WikiTC.mongooseResolvers.findById(),
@@ -20,5 +29,8 @@ const WikiMutation = {
     wikiRemoveOne: WikiTC.mongooseResolvers.removeOne(),
     wikiRemoveMany: WikiTC.mongooseResolvers.removeMany(),
 }
+
+Authorization.bulkApplyAuthRules(WikiQuery, rules)
+Authorization.bulkApplyAuthRules(WikiMutation, rules)
 
 export { WikiQuery, WikiMutation }
