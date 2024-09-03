@@ -10,18 +10,18 @@ import Promo3 from '../../assets/img/promo3.png'
 import Promo4 from '../../assets/img/promo4.png'
 
 import style from './Landing.module.css'
-import useUser from '../../contexts/UserContext'
-import { useEffect } from 'react'
+//import useUser from '../../contexts/UserContext'
+//import { useEffect } from 'react'
 
 export function Landing() {
 
 	const navigate = useNavigate()
 
-	const { user } = useUser()
+	//const { user } = useUser()
 
-	useEffect(() => {
+	/*useEffect(() => {
 		if(user) navigate('/home')
-	},[])
+	},[])*/
 
 	return (
 		<>
