@@ -17,6 +17,8 @@ import MenuItem from '../../components/MenuItem'
 
 export function Settings() {
 	const { user, reset } = useUser()
+
+	if(!user) throw new Error('Not logged in.')
 	const toast = useToast()
 
 	const setTheme = useThemeContextSetter()

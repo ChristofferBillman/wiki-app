@@ -23,7 +23,7 @@ export default function Home() {
 	}, [])
 
 	const userContext = useUser()
-	const username = userContext.user.name
+	const username = userContext.user?.name
 
 	return (
 		<Column style={{ margin: '0 auto' }}>
@@ -49,7 +49,7 @@ export default function Home() {
 const sixElements = [1,2,3,4,5,6]
 
 interface EmptyStateProps {
-	name: string
+	name: string | undefined
 }
 
 function EmptyState({name}: EmptyStateProps) {

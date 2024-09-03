@@ -19,9 +19,9 @@ export function Landing() {
 
 	const { user } = useUser()
 
-	/*useEffect(() => {
+	useEffect(() => {
 		if(user) navigate('/home')
-	},[])*/
+	},[])
 
 	return (
 		<>

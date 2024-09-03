@@ -33,10 +33,12 @@ export default function WikiCreator() {
 	const [members, setMembers] = useState<User[]>([])
 
 	useEffect(() => {
+		if(!user) throw new Error('Not logged in!')
 		setMembers([user])
 	},[])
 
 	const onSubmit = () => {
+		if(!user) throw new Error('Not logged in')
 		// LMAOOOO WHAT IS THIS CODE ;_;
 		if(wiki.name == '') {
 			toast('Wiki needs a name.', 'error')
