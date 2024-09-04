@@ -57,6 +57,7 @@ const userSelf = UserTC.schemaComposer.createResolver<unknown, {}>({
         const { user } = context
         Authorization.assertIsLoggedIn(context)
         removePassword(user)
+        console.log(user)
         return { user }
     }
 })
@@ -247,7 +248,7 @@ let UserMutation = {
 
 export { UserQuery, UserMutation }
 
-function removePassword(user: IUser) {
+export function removePassword(user: IUser) {
     user.password = undefined
     delete user.password
 }

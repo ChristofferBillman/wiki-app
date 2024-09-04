@@ -16,7 +16,7 @@ export default class Authorization {
 			throw new Error(`Permissions: You cannot mutate a wiki you are not the owner of.`)
 		}
 	}
-	static async assertIsWikiMember(context, wikiId) {
+	static assertIsWikiMember(context, wikiId) {
 		if(!context.user.wikis.includes(wikiId)) {
 			throw new Error(`Permissions: You cannot access a wiki you are not a member of.`)
 		}

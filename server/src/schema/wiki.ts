@@ -227,7 +227,7 @@ const WikiMutation = {
 
 export { WikiQuery, WikiMutation }
 
-function pushIfAbsent(arr: unknown[], el: unknown) {
+export function pushIfAbsent(arr: unknown[], el: unknown) {
     if (!arr.includes(el)) {
         arr.push(el)
     }
