@@ -1,10 +1,13 @@
-import express, { Request, Response } from 'express'
+import express, { Request } from 'express'
 import cookieParser from 'cookie-parser'
+
 const app = express()
+
 import helmet from 'helmet'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import { graphqlHTTP } from 'express-graphql'
+import playground from 'graphql-playground-middleware-express'
 import schema from './schema/index'
 import GetDatabaseConnection from './util/db'
 import Authentication from './util/authentication'
@@ -14,60 +17,29 @@ app.use(morgan('common'))
 
 app.use(
 	helmet({
-		contentSecurityPolicy:
-			process.env.NODE_ENV === 'production' ? undefined : false,
+		contentSecurityPolicy: 
+            process.env.NODE_ENV == 'production' ? undefined : false,
 	})
 )
 
 app.use(express.json())
 app.use(cookieParser())
-//app.use(Authentication.VerifyTokenAndAddUserToReq)
 
 GetDatabaseConnection()
 
-// POST (Login)
-app.get('/login', async (req: Request, res: Response) => {
-	const name: string = req.query.name as string
-	const password: string = req.query.password as string
-	
-	if (name == undefined || password == undefined) {
-		res.status(400)
-		res.send('Missing credentials.')
-		return
-	}
+app.get('/playground', playground({ endpoint: '/graphql' }))
 
-	if (name == '' || password == '') {
-		res.status(400)
-		res.send('Missing credentials.')
-		return
-	}
-
-	// Token.Generate authenticates the user.
-	const userAndToken = await Authentication.GenerateToken(name, password)
-
-	if (userAndToken == null) {
-		res.status(400)
-		res.send('Incorrect credentials.')
-		return
-	}
-
-	const {user, token} = userAndToken
-
-	user.password = undefined
-	
-	res.cookie('token', token, { sameSite: 'none', secure: true })
-	res.status(200).json(user)
-})
+// Adds user to req.user.
+app.use(Authentication.Authenticate)
 
 app.use('/graphql', graphqlHTTP((req: Request) => ({
 	 schema,
 	 context: {
 	   user: req.user,
 	 },
-	 graphiql: true,
+	 graphiql: false,
 	})
 ))
-	
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
