@@ -6,6 +6,7 @@ export interface IWiki extends Document {
     _id?: mongoose.Types.ObjectId
     description: string
     img?: string
+    owner: string
     name: string
 }
 
@@ -18,6 +19,10 @@ const WikiSchema: Schema<IWiki> = new Schema({
         type: String,
         required: true,
         maxLength: [64, 'Wiki name cannot be longer than 64 characters.']
+    },
+    owner: {
+        type: String,
+        required: true
     },
     img: {
         type: String 
