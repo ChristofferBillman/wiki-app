@@ -28,25 +28,22 @@ export default class Authentication {
      * @param next Express next function
      * @returns void
      */
-    static async VerifyTokenAndAddUserToReq(req: Request, res: Response, next) {
-        const token = req.cookies.token
-
-        if (token == undefined) {
-            res.status(401)
-            res.send('Token is missing.')
-            return
+    static async Authenticate(req: Request, res: Response, next) {
+        // If there is no token, user cannot authenticate.
+        if(!req.headers.authorization) {
+            return next()
         }
 
-        const authenticated: boolean = await Authentication.VerifyToken(token)
+        const token = req.headers.authorization.split(' ')[1]
 
-        if (!authenticated) {
-            res.status(401)
-            res.send('Invalid token.')
-            return
+        // If token is present and valid, set user.
+        if(Authentication.VerifyToken(token)) {
+            const [id, _] = token.split(Authentication.TOKEN_DELIMITER)
+            req.user = await User.findById(id)
+            return next()
         }
-        // Set req.user so that next can use it for authorization.
-        const [id, _] = token.split(Authentication.TOKEN_DELIMITER)
-        req.user = await User.findById(id)
+        
+        // If there is either no token or token is invalid continue as public.
         next()
     }
     /**
