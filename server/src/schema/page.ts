@@ -14,7 +14,7 @@ const allPagesInWiki = PageTC.schemaComposer.createResolver<unknown, AllPagesInW
     args: {
         _id: 'String!'
     },
-    type: `type PagesPayload {
+    type: `type AllPagesInWikiPayload {
         pages: [Page]!
     }`,
     resolve: async ({ context, args }) => {
@@ -33,7 +33,10 @@ interface PageByIdArgs {
 const pageById = PageTC.schemaComposer.createResolver<unknown, PageByIdArgs>({
     name: 'pageById',
     kind: 'query',
-    type: `type PagePayload {
+    args: {
+        _id: 'String!'
+    },
+    type: `type PageByIdPayload {
         page: Page
     }`,
     resolve: async ({ context, args }) => {
@@ -57,7 +60,13 @@ interface CreatePageArgs {
 const createPage = PageTC.schemaComposer.createResolver<unknown, CreatePageArgs>({
     name: 'createPage',
     kind: 'mutation',
-    type: `type PagePayload {
+    args: {
+        content: 'String',
+        infoSection: 'String',
+        authors: '[String]',
+        wikiId: 'String!'
+    },
+    type: `type CreatePagePayload {
         page: Page!
     }`,
     resolve: async ({ context, args }) => {
@@ -92,7 +101,14 @@ interface UpdatePageArgs {
 const updatePage = PageTC.schemaComposer.createResolver<unknown, UpdatePageArgs>({
     name: 'updatePage',
     kind: 'mutation',
-    type: `type PagePayload {
+    args: {
+        _id: 'String!',
+        content: 'String',
+        infoSection: 'String',
+        authors: '[String]',
+        wikiId: 'String!'
+    },
+    type: `type UpdatePagePayload {
         page: Page!
     }`,
     resolve: async ({ context, args }) => {
@@ -129,7 +145,10 @@ interface RemovePageArgs {
 const removePage = PageTC.schemaComposer.createResolver<unknown, RemovePageArgs>({
     name: 'removePage',
     kind: 'mutation',
-    type: `type PagePayload {
+    args: {
+        _id: 'String!'
+    },
+    type: `type RemovePagePayload {
         page: Page!
     }`,
     resolve: async ({ context, args }) => {
@@ -144,8 +163,6 @@ const removePage = PageTC.schemaComposer.createResolver<unknown, RemovePageArgs>
         return { page: deletedPage }
     }
 })
-
-
 
 const PageQuery = {
     allPagesInWiki,

@@ -16,7 +16,7 @@ const wikisByName = WikiTC.schemaComposer.createResolver<unknown, WikiByNameArgs
     args: {
         name: 'String!'
     },
-    type: `type WikiPayload {
+    type: `type WikiByNamePayload {
         wikis: [Wiki!]!
     }`,
     resolve: async ({ context, args }) => {
@@ -29,7 +29,7 @@ const wikisByName = WikiTC.schemaComposer.createResolver<unknown, WikiByNameArgs
 const myWikis = WikiTC.schemaComposer.createResolver<unknown, {}>({
     name: 'myWikis',
     kind: 'query',
-    type: `type WikiPayload {
+    type: `type MyWikiPayload {
         wikis: [Wiki!]!
     }`,
     resolve: async ({ context }) => {
@@ -48,7 +48,7 @@ const wikiById = WikiTC.schemaComposer.createResolver<unknown, WikiByIdArgs>({
     args: {
         _id: 'String!'
     },
-    type: `type WikiPayload {
+    type: `type WikiByIdPayload {
         wiki: Wiki
     }`,
     resolve: async ({ context, args }) => {
@@ -73,7 +73,7 @@ const createWiki = WikiTC.schemaComposer.createResolver<unknown, CreateWikiArgs>
         name: 'String!',
         members: '[String!]!'
     },
-    type: `type WikiPayload {
+    type: `type CreateWikiPayload {
         wiki: Wiki
     }`,
     resolve: async ({ args, context }) => {
@@ -124,7 +124,7 @@ const updateWiki = WikiTC.schemaComposer.createResolver<unknown, UpdateWikiArgs>
         name: 'String',
         owner: 'String'
     },
-    type: `type WikiPayload {
+    type: `type UpdateWikiPayload {
         wiki: Wiki
     }`,
     resolve: async ({ args, context }) => {
@@ -177,7 +177,7 @@ const removeWiki = WikiTC.schemaComposer.createResolver<unknown, DeleteWikiArgs>
     args: {
         _id: 'String!'
     },
-    type: `type WikiPayload {
+    type: `type DeleteWikiPayload {
         wiki: Wiki
     }`,
     resolve: async ({ context, args }) => {

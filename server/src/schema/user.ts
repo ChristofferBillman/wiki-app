@@ -135,7 +135,7 @@ const updateName = UserTC.schemaComposer.createResolver<unknown, UpdateNameArgs>
 
         const updatedUser: IUser | null = await User.findByIdAndUpdate(
             context.user._id,
-            { name },
+            { name: args.name },
             { new: true }
         )
 
