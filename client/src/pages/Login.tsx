@@ -5,9 +5,23 @@ import { Row } from '../components/common/Layout'
 import Button from '../components/common/Button'
 import { Arrow, Plus } from '../assets/Icons'
 import { useNavigate } from 'react-router-dom'
-import UserAPI from '../network/UserAPI'
 import useUser from '../contexts/UserContext'
 import useToast from '../contexts/ToastContext'
+import { useLazyQuery } from '@apollo/client'
+import { gql } from '../__generated__/gql'
+import { LoadingIcon } from '../assets/Icons/LoadingIcon'
+
+const LOGIN = gql(`
+query Login($name: String!, $password: String!) {
+	login(name: $name, password: $password) {
+		token
+		user {
+			_id
+			name
+			role
+		}
+	}
+}`)
 
 export default function Login() {
 
@@ -19,21 +33,25 @@ export default function Login() {
 
 	const { setUser } = useUser()
 
-	const onSubmit = () => {
-		UserAPI.login(name, password,
-			user => {
-				setUser(user)
+	const [login, { loading }] = useLazyQuery(LOGIN, {
+		onError: e => {
+			toast(e.message, 'error')
+		},
+		onCompleted: data => {
+			if (data?.login) {
+				setUser(data.login.user)
+				localStorage.setItem('token', data.login.token)
 				navigate('/home')
-			},
-			err => toast(err, 'error'))
-	}
+			}
+		}
+	})
 
 	return (
-		<Row className='fillAvailable' style={{ alignItems: 'center', justifyContent: 'center'}}>
+		<Row className='fillAvailable' style={{ alignItems: 'center', justifyContent: 'center' }}>
 			<Card style={{ width: '300px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
 				<h1 style={{ margin: 0 }}>Log in</h1>
-				
+
 				<Input
 					placeholder='Name'
 					name='name'
@@ -47,19 +65,20 @@ export default function Login() {
 					value={password}
 					setValue={e => setPassword(e.target.value)}
 				/>
-				
-				<Row style={{alignItems: 'center', justifyContent: 'space-between'}}>
+
+				<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
 					<Button
-						text='Login'
-						color='var(--primary)'
-						icon={<Arrow/>}
-						onClick={onSubmit}
+						text={loading ? 'Logging in...' : 'Login'}
+						color={loading ? 'var(--gray)' : 'var(--primary)'}
+						icon={loading ? <LoadingIcon/> : <Arrow />}
+						onClick={() => login({ variables: { name, password }})}
+						disabled={loading}
 					/>
 
 					<Button
 						text='Sign Up'
 						outline
-						icon={<Plus color='var(--black)'/>}
+						icon={<Plus color='var(--black)' />}
 						onClick={() => navigate('/signup')}
 					/>
 				</Row>

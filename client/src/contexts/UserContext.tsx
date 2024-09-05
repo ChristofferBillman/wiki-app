@@ -1,10 +1,10 @@
 import { useContext, Dispatch, SetStateAction, createContext} from 'react'
-import User from '../types/User'
+
 import useLocalStorage from '../hooks/useLocalStorage'
 
 interface UserContext {
-	user: User
-	setUser: Dispatch<SetStateAction<User | undefined>>
+	user: any
+	setUser: Dispatch<SetStateAction<any>>
 	reset: () => void
 }
 
@@ -27,7 +27,7 @@ export function UserContextProvider({children}: Props): JSX.Element {
 
 	const reset = () => {
 		localStorage.removeItem('user')
-		document.cookie = 'token' + '=; Max-Age=-99999999;'
+		localStorage.removeItem('token')
 	}
 
 	return (

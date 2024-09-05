@@ -7,7 +7,7 @@ export default defineConfig({
 	assetsInclude: ['**/*.md'],
 	server: {
 		proxy: {
-			'/api': 'http://localhost:3000/'
+			'/graphql': 'http://localhost:3000/graphql'
 		}
 	}
 })

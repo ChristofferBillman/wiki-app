@@ -5,11 +5,10 @@ import Card from '../common/Card'
 import { Column } from '../common/Layout'
 import PlaceholderImg from '../../assets/img/placeholder.jpg'
 
-import Wiki from '../../types/Wiki'
 import Skeleton from '../common/Skeleton'
 
 interface Props {
-    wiki?: Wiki
+    wiki?: any
 	loading?: boolean
 	errored?: boolean
 }
@@ -18,7 +17,7 @@ export function WikiCard({wiki, loading, errored}: Props) {
 
 	const navigate = useNavigate()
 
-	if(!wiki) return (
+	if(!wiki || errored) return (
 		<Skeleton loading={loading} errored={errored} style={{borderRadius: '24px'}}>
 			<Card style={{width: '400px', maxWidth: '600px', height: '245px'}}/>
 		</Skeleton>)
@@ -37,7 +36,7 @@ export function WikiCard({wiki, loading, errored}: Props) {
 	)
 }
 
-function getImage(wiki: Wiki): string {
+function getImage(wiki: any): string {
 	const img = wiki.img
 
 	if(img == undefined || img == '') {

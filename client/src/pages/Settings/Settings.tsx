@@ -10,7 +10,6 @@ import { Arrow, Moon, Pencil, Sun } from '../../assets/Icons'
 import Button from '../../components/common/Button'
 import Divider from '../../components/common/Divider'
 import { useThemeContextSetter } from '../../contexts/ThemeContext'
-import UserAPI from '../../network/UserAPI'
 
 import style from './Settings.module.css'
 import MenuItem from '../../components/MenuItem'
@@ -23,14 +22,9 @@ export function Settings() {
 	const navigate = useNavigate()
 
 	const handleSignout = () => {
-		UserAPI.logout(
-			() => {
-				reset()
-				navigate('/login')
-				toast('You have been signed out.', 'info')
-			},
-			err => toast(err, 'error')
-		)
+		reset()
+		navigate('/login')
+		toast('You have been signed out.', 'info')
 	}
 
 	return (
