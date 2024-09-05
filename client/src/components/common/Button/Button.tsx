@@ -11,9 +11,10 @@ interface Props {
 	loading?: boolean
 	errored?: boolean
 	className?: string
+	disabled?: boolean
 }
 
-export function Button({ icon, text, textColor, color = 'var(--white)', outline = false, onClick, loading, className, errored }: Props) {
+export function Button({ icon, text, textColor, color = 'var(--white)', outline = false, onClick, loading, className, errored, disabled }: Props) {
 
 	const outlineStyle = outline ? style.outline : ''
 
@@ -24,7 +25,7 @@ export function Button({ icon, text, textColor, color = 'var(--white)', outline 
 			<button
 				className={`${style.btn} ${outlineStyle} ${className}`}
 				style={{ background: color }}
-				onClick={onClick}
+				onClick={() => !disabled && onClick && onClick()}
 			>
 				{icon}
 
