@@ -15,8 +15,8 @@ const login = UserTC.schemaComposer.createResolver<unknown, LoginArgs>({
         password: 'String!'
     },
     type: `type LoginPayload {
-        token: String
-        user: User
+        token: String!
+        user: User!
     }`,
     resolve: async ({ args }) => {
         const { name, password } = args

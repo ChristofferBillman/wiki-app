@@ -11,6 +11,8 @@ import playground from 'graphql-playground-middleware-express'
 import schema from './schema/index'
 import GetDatabaseConnection from './util/db'
 import Authentication from './util/authentication'
+import FileAPI from './fileuploadAPI'
+import path from 'path'
 
 dotenv.config()
 app.use(morgan('common'))
@@ -24,6 +26,8 @@ app.use(
 
 app.use(express.json())
 app.use(cookieParser())
+app.use('/api/uploads', express.static(path.join(__dirname, '..', 'uploads')))
+app.use(express.static(path.join(__dirname, '..', '..', 'client', 'dist')))
 
 GetDatabaseConnection()
 
@@ -31,6 +35,8 @@ app.get('/playground', playground({ endpoint: '/graphql' }))
 
 // Adds user to req.user.
 app.use(Authentication.Authenticate)
+
+FileAPI(app)
 
 app.use('/graphql', graphqlHTTP((req: Request) => ({
 	 schema,
@@ -44,6 +50,10 @@ app.use('/graphql', graphqlHTTP((req: Request) => ({
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
 	console.log(`Wiki server is running on port ${PORT}`)
+})
+
+app.get('*', (_, res) => {
+    res.sendFile(path.join(__dirname, '..', '..', 'client', 'dist', 'index.html'))
 })
 
 export default app
