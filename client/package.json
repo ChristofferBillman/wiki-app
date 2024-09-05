@@ -9,9 +9,23 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate": "graphql-codegen",
+    "generate:prod": "GRAPHQL_SCHEMA_URL=http://localhost/graphql graphql-codegen --config codegen.ts",
+    "generate:dev": "graphql-codegen -w"
+  },
+  "graphql": {
+    "schema": "http://localhost:3000/graphql",
+    "documents": "**/*.{graphql,js,ts,jsx,tsx}"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.7",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/client-preset": "^4.3.3",
+    "@graphql-codegen/typescript-resolvers": "^4.2.1",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "@parcel/watcher": "^2.4.1",
+    "graphql": "^16.9.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
@@ -19,7 +33,7 @@
     "react-router-dom": "^6.15.0"
   },
   "devDependencies": {
-    "@types/node": "^20.5.2",
+    "@types/node": "^20.16.5",
     "@types/react": "^18.2.15",
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/react-dom": "^18.2.7",
