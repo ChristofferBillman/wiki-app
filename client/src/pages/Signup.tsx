@@ -5,10 +5,24 @@ import Card from '../components/common/Card'
 import { Row } from '../components/common/Layout'
 import Button from '../components/common/Button'
 import { Arrow } from '../assets/Icons'
-import UserAPI from '../network/UserAPI'
 import useUser from '../contexts/UserContext'
 import useToast from '../contexts/ToastContext.tsx'
+import { gql } from '../__generated__'
+import { useMutation } from '@apollo/client'
+import { LoadingIcon } from '../assets/Icons/LoadingIcon.tsx'
 
+const CREATE_USER = gql(`
+	mutation CreateUser($name: String!, $password: String!) {
+		createUser(name: $name, password: $password) {
+			token,
+			user {
+				name
+				role
+				_id
+			}
+		}
+	}
+	`)
 export default function Signup() {
 
 	const [name, setName] = useState('')
@@ -18,14 +32,18 @@ export default function Signup() {
 	const toast = useToast()
 	const {setUser} = useUser()
 
-	const onSubmit = () => {
-		UserAPI.signup(name,password,
-			user => {
-				setUser(user)
+	const [createUser, { loading }] = useMutation(CREATE_USER, {
+		onError: e => {
+			toast(e.message, 'error')
+		},
+		onCompleted: (data: any) => {
+			if (data?.createUser) {
+				setUser(data.createUser.user)
+				localStorage.setItem('token', data.createUser.token)
 				navigate('/home')
-			},
-			err => toast(err, 'error'))
-	}
+			}
+		}
+	})
 
 	return (
 		<Row className='fillAvailable' style={{ alignItems: 'center', justifyContent: 'center'}}>
@@ -49,10 +67,11 @@ export default function Signup() {
 
 				<Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
 					<Button
-						text='Create Account'
-						color='var(--primary)'
-						icon={<Arrow />}
-						onClick={onSubmit}
+						text={loading ? 'Creating...' : 'Create Account'}
+						color={loading ? 'var(--gray)' : 'var(--primary)'}
+						icon={loading ? <LoadingIcon/> : <Arrow />}
+						onClick={() => createUser({variables: {name, password}})}
+						disabled={loading}
 					/>
 				</Row>
 			</Card>
