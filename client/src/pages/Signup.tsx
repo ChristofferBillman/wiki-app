@@ -22,7 +22,7 @@ const CREATE_USER = gql(`
 			}
 		}
 	}
-	`)
+`)
 export default function Signup() {
 
 	const [name, setName] = useState('')

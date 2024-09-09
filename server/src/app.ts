@@ -36,8 +36,6 @@ app.get('/playground', playground({ endpoint: '/graphql' }))
 // Adds user to req.user.
 app.use(Authentication.Authenticate)
 
-FileAPI(app)
-
 app.use('/graphql', graphqlHTTP((req: Request) => ({
 	 schema,
 	 context: {
@@ -51,6 +49,8 @@ const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
 	console.log(`Wiki server is running on port ${PORT}`)
 })
+
+FileAPI(app)
 
 app.get('*', (_, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'client', 'dist', 'index.html'))

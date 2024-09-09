@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import PageCard from '../components/PageCard'
 import { Column, Row } from '../components/common/Layout'
 import Page from '../types/Page'
 import PageAPI from '../network/PageAPI'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import Wiki from '../types/Wiki'
-import { initalWiki } from '../reducers/WikiReducer'
-import wikiAPI from '../network/WikiAPI'
 
 import Placeholder from '../assets/img/placeholder.jpg'
 import Button from '../components/common/Button'
@@ -16,46 +13,60 @@ import LoadedImg from '../components/common/LoadedImg'
 import P from '../components/common/text/P'
 import H1 from '../components/common/text/H1'
 import { LoadContextProvider } from '../contexts/LoadContext'
+import { useQuery, useLazyQuery } from '@apollo/client'
+import { gql } from '../__generated__'
+import { initalWiki } from '../reducers/WikiReducer'
 
+const WIKIS_BY_NAME = gql(`
+	query WikiByName($name: String!) {
+		wikisByName(name: $name) {
+			wikis {
+				description
+				name
+				img
+				_id
+			}
+		}
+	}
+`)
+
+const ALL_PAGES_IN_WIKI = gql(`
+	query AllPagesInWiki($_id: String!) {
+		allPagesInWiki(_id: $_id) {
+			pages {
+				content
+				infoSection
+				authors
+				wikiId
+				_id
+			}
+		}
+	}
+`)
 export default function WikiHome() {
-
-	const [pages, setPages] = useState<Page[]>([])
-	const [wiki, setWiki] = useState<Wiki>(initalWiki)
-
-	const [pagesLoading, setPagesLoading] = useState(true)
-	const [wikiLoading, setWIkiLoading] = useState(true)
-
-	const [error, setError] = useState('')
-
 	const { wikiname } = useParams()
+	if(!wikiname) throw new Error('nope')
+		
 	const navigate = useNavigate()
 	const location = useLocation()
 
-	useEffect(() => {
-		if(!wikiname) return setError('Wiki name not found in pathname.')
+	const {data, loading, error} = useQuery(WIKIS_BY_NAME, {
+		variables: { name: wikiname },
+		onCompleted: data => {
+			allPagesInWiki(data.wikisByName?.wikis[0]._id)
+		}
+	})
+	const wiki = data?.wikisByName?.wikis[0] ?? initalWiki
 
-		PageAPI.allFromWiki(wikiname,
-			pages => {
-				setPages(pages)
-				setPagesLoading(false)
-			},
-			err => {
-				setError(err + '.')
-			})
+	const [allPagesInWiki, pagesRequest] = useLazyQuery(ALL_PAGES_IN_WIKI, {
+		variables: { _id: wiki._id }
+	})
 
-		wikiAPI.byName(wikiname,
-			wiki => {
-				setWiki(wiki)
-				setWIkiLoading(false)
-			},
-			err => {
-				setError(err + '.')
-			})
-	},[])
+	const pages = pagesRequest.data?.allPagesInWiki?.pages ?? []
 
 	return (
 		<>
-			<LoadContextProvider loading={wikiLoading} errored={error != ''}>
+			<LoadContextProvider loading={loading} errored={error != undefined}>
 				<H1
 					style={{
 						color: '#fff',
@@ -103,7 +114,7 @@ export default function WikiHome() {
 					/>
 				</Row>
 
-				{ wikiLoading ? (
+				{ loading ? (
 					<div
 						className='loader'
 						style={{ height: '600px', width: '100vw', position: 'absolute', top: 0, left: 0, zIndex: -1}}
@@ -130,8 +141,8 @@ export default function WikiHome() {
 			</LoadContextProvider>
 			
 			{/* Everything below is a mess and should be refactored */}
-			<LoadContextProvider loading={pagesLoading}>
-				{error != '' ? (
+			<LoadContextProvider loading={pagesRequest.loading}>
+				{pagesRequest.error != undefined ? (
 					<>
 						<h1 style={{margin: '35rem 0 1rem 0'}}> Oops! </h1>
 
@@ -139,7 +150,7 @@ export default function WikiHome() {
 							Looks like something went wrong, double check your internet connection and reload the page.
 						</h2>
 						<p style={{margin: '4rem 0 0 0'}}>Here is a more detailed description of the error:</p>
-						<p>{error}</p>
+						<p>{pagesRequest.error.message + ' ' +  error?.message}</p>
 					</>
 				) : (
 					<>
@@ -152,9 +163,9 @@ export default function WikiHome() {
 								padding: 0
 							}}
 						>
-							{!pagesLoading ? (
+							{!pagesRequest.loading ? (
 								pages.length == 0 ? <EmptyState/> : (
-									pages.map(page => <PageCard key={page._id} page={page}/>))
+									pages.map(page => <PageCard key={page?._id} page={page}/>))
 							): (
 								sixElements.map(el => <PageCard key={el} loading/>)
 							)}

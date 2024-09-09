@@ -10,7 +10,7 @@ import { useMemo } from 'react'
 import Skeleton from '../common/Skeleton'
 
 interface Props {
-    page?: Page
+    page?: any
 	loading?: boolean
 }
 

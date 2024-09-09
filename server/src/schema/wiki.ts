@@ -4,7 +4,7 @@ import { PageModel as Page } from '../models/Page'
 import Authorization from '../util/authorization'
 import { removePassword } from './user'
 import { PageRecord } from '../models/PageRecord'
-import mongoose from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 
 
 interface WikiByNameArgs {
@@ -77,33 +77,25 @@ const createWiki = WikiTC.schemaComposer.createResolver<unknown, CreateWikiArgs>
         wiki: Wiki
     }`,
     resolve: async ({ args, context }) => {
-        const session = await mongoose.startSession()
-        session.startTransaction()
-        
-        try {
-            Authorization.assertIsLoggedIn(context)
+		Authorization.assertIsLoggedIn(context)
 
-            const { description, img, name, members } = args
+		const { description, img, name, members } = args
 
-            pushIfAbsent(members, context.user._id)
+		pushIfAbsent(members, context.user._id)
 
-            const newWiki: IWiki = new Wiki({
-                description,
-                img,
-                name,
-                owner: context.user._id
-            }, {session})
+		const newWiki: IWiki = new Wiki({
+			description,
+			img,
+			name,
+			owner: context.user._id,
+			_id: new Types.ObjectId()
+		})
 
-            const wiki: IWiki = await newWiki.save()
+		const wiki: IWiki = await newWiki.save()
 
-            await updateWikiMembers(members, wiki._id, {session})
+		await updateWikiMembers(members, wiki._id)
 
-            return { wiki }
-        } catch(err) {
-            await session.abortTransaction()
-            session.endSession()
-            throw err
-        }
+		return { wiki }
     }
 })
 

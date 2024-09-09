@@ -10,31 +10,51 @@ import Card from '../components/common/Card'
 import Button from '../components/common/Button'
 import useToast from '../contexts/ToastContext'
 import Input from '../components/common/Input'
-import WikiAPI from '../network/WikiAPI'
 import wikiReducer, { initalWiki, WikiReducerType } from '../reducers/WikiReducer'
 import UserInput from '../components/UserInput'
 import User from '../types/User'
 import FileAPI from '../network/FileAPI'
-import wikiAPI from '../network/WikiAPI'
 import useUser from '../contexts/UserContext'
+import { gql } from '../__generated__'
+import { useMutation } from '@apollo/client'
 
+const CREATE_WIKI = gql(`
+	mutation CreateWiki($name: String!, $description: String!, $img: String!, $members: [String!]!) {
+		createWiki(name: $name, description: $description, img: $img, members: $members) {
+			wiki {
+				name
+			}
+		}
+	}
+`)
 export default function WikiCreator() {
 	const navigate = useNavigate()
 
 	const toast = useToast()
 
-	const [filename, setFilename] = useState('')
 	const filePickerRef = useRef(null)
 
 	const { user } = useUser()
-
+	const [filename, setFilename] = useState('')
 	const [wiki, dispatch] = useReducer(wikiReducer, initalWiki)
-
 	const [members, setMembers] = useState<User[]>([])
 
 	useEffect(() => {
 		setMembers([user])
 	},[])
+
+	const [createWiki, { loading }] = useMutation(CREATE_WIKI, {
+		onError: err => {
+			toast(err.message, 'error')
+		},
+		onCompleted: data => {
+			if(data.createWiki?.wiki) {
+				toast('Successfully created wiki', 'success')
+				navigate('/wiki/' + encodeURIComponent(data.createWiki.wiki.name))
+			}
+		}
+	})
+
 
 	const onSubmit = () => {
 		// LMAOOOO WHAT IS THIS CODE ;_;
@@ -59,22 +79,13 @@ export default function WikiCreator() {
 			return
 		}
 
-		// Why did I un-promisify fetch calls, this code looks like a mess...
-		// TODO: Rewrite all networking code to return promises instead. Va lite att göra :-))
 		FileAPI.upload(filePickerRef,
 			res => {
-				const wikiWithImg = { ...wiki, img: res.filename }
-				WikiAPI.create(wikiWithImg,
-					createdWiki => {
-						wikiAPI.updateMembers(createdWiki._id, members.map(user => user._id),
-							() => {
-								toast('Successfully created wiki', 'success')
-								navigate('/wiki/' + encodeURIComponent(createdWiki.name))
-							},
-							err => toast(err, 'error')
-						)
-					},
-					err => toast(err, 'error'))
+				createWiki({variables: {
+					...wiki,
+					img: res.filename,
+					members: members.map(member => member._id) as string[]
+				}})
 			},
 			err => toast(err, 'error'))
 	}
