@@ -6,13 +6,14 @@ import path from 'path'
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, path.join(__dirname, '..','uploads'))
+      cb(null, path.join(__dirname, 'uploads'))
     },
     filename: function (req, file, cb) {
         crypto.pseudoRandomBytes(16, function (err, raw) {
-          if (err) return cb(err)
+			if (!file) return cb(err)
+          	if (err) return cb(err)
     
-          cb(null, raw.toString('hex') + '.' + mime.extension(file.mimetype))
+          	cb(null, raw.toString('hex') + '.' + mime.extension(file.mimetype))
         })
     }
   })
@@ -22,9 +23,7 @@ const upload = multer({ storage })
 
 export default function FileAPI(app: Application) {
     // POST
-	console.log('Endpoint registered.')
     app.post('/api/upload', upload.single("singleFile"),  async (req, res) => {
-		console.log('Endpoint HIT.')
         const filename = req.file.filename
         res.json({ filename })
     })

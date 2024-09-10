@@ -26,7 +26,7 @@ app.use(
 
 app.use(express.json())
 app.use(cookieParser())
-app.use('/api/uploads', express.static(path.join(__dirname, '..', 'uploads')))
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use(express.static(path.join(__dirname, '..', '..', 'client', 'dist')))
 
 GetDatabaseConnection()
@@ -42,6 +42,11 @@ app.use('/graphql', graphqlHTTP((req: Request) => ({
 	   user: req.user,
 	 },
 	 graphiql: false,
+	 customFormatErrorFn: err => {		
+		return {
+		  message: err.message,
+		}
+	  },
 	})
 ))
 
