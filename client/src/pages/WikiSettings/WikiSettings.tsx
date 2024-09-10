@@ -7,101 +7,158 @@ import Card from '../../components/common/Card'
 import useToast from '../../contexts/ToastContext'
 import { Arrow, Check, Cross, Floppy, Pencil, Trash } from '../../assets/Icons'
 import Button from '../../components/common/Button'
-import { useEffect, useReducer, useState } from 'react'
-import wikiAPI from '../../network/WikiAPI'
+import { useReducer, useState } from 'react'
 import wikiReducer, { initalWiki, WikiReducerType } from '../../reducers/WikiReducer'
 import P from '../../components/common/text/P'
 import ImageUploadButton from '../../components/ImageUpload'
 import UserInput from '../../components/UserInput'
-import User from '../../types/User'
 import Divider from '../../components/common/Divider'
 import Input from '../../components/common/Input'
 import Textarea from '../../components/common/Textarea'
 import ConfirmationModal from '../../components/common/ConfirmationModal'
-import Wiki from '../../types/Wiki'
 import H4 from '../../components/common/text/H4'
 import H5 from '../../components/common/text/H5'
 import { LoadContextProvider } from '../../contexts/LoadContext'
 
 import CSSstyle from './WikiSettings.module.css'
 import MenuItem from '../../components/MenuItem'
+import { gql } from '../../__generated__'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+
+const REMOVE_WIKI = gql(`
+	mutation RemoveWiki($_id: String!) {
+		removeWiki(_id: $_id) {
+			wiki {
+				name
+			}
+		}
+	}
+`)
+
+const UPDATE_WIKI = gql(`
+	mutation UpdateWiki($wiki: UpdateWikiInput!) {
+		updateWiki(input: $wiki) {
+			wiki {
+				_id
+			}
+		}
+	}
+`)
+
+const GET_WIKI_BY_NAME = gql(`
+	query GetWikiByName($name: String!) {
+		wikisByName(name: $name) {
+			wikis {
+				img
+				description
+				name
+				owner
+				_id
+			}
+		}
+	}
+`)
+
+const GET_MEMBERS = gql(`
+	query GetWikiMembers($_id: String!) {
+		wikiMembers(_id: $_id) {
+			members {
+				name
+				_id
+			}
+		}
+	}
+`)
+
+const UPDATE_MEMBERS = gql(`
+	mutation UpdateWikiMembers($_id: String!, $members: [String]!) {
+		updateWikiMembers(_id: $_id, members: $members) {
+			members {
+				name
+				_id
+			}
+		}
+	}
+`)
 
 export function WikiSettings() {
 	const toast = useToast()
+
 	const { wikiname } = useParams()
+	if(!wikiname) throw new Error('wikiname not found in pathname.')
 
 	const [wiki, dispatch] = useReducer(wikiReducer, initalWiki)
 
-	const [members, setMembers] = useState<User[]>([])
-	const [membersReference, setMembersReference] = useState<User[]>([])
+	const [members, setMembers] = useState<any[]>([])
+	const [membersReference, setMembersReference] = useState<any[]>([])
 
 	const [wikiNameIsEdit, setWikiNameIsEdit] = useState(false)
 	const [descriptionIsEdit, setDescriptionIsEdit] = useState(false)
-
 	const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false)
-
-	const [error, setError] = useState('')
-	const [loading, setLoading] = useState(true)
 
 	const navigate = useNavigate()
 
-	useEffect(() => {
-		if (!wikiname) throw new Error('wikiname not found in pathname.')
-		wikiAPI.byName(wikiname,
-			wiki => {
-				if (!wiki._id) throw new Error('Wiki ID not found on wiki.')
-				wikiAPI.getMembers(wiki._id,
-					members => {
-						setMembers(members)
-						setMembersReference(members)
-						setLoading(false)
-					},
-					err => {
-						toast(err, 'error')
-						setError(err + '.')
-					})
-				dispatch({ type: WikiReducerType.SET_STATE, payload: wiki })
-			},
-			err => toast(err, 'error')
-		)
-	}, [])
+	const wikiRequest = useQuery(GET_WIKI_BY_NAME, {variables: {name: wikiname}, onCompleted: data => {
+		getWikiMembers({variables: {_id: data.wikisByName?.wikis[0]._id}})
+		dispatch({type: WikiReducerType.SET_STATE, payload: data.wikisByName?.wikis[0]})
+	}})
 
-	const submitEdit = (wiki: Wiki) => {
-		wikiAPI.update(wiki._id, wiki,
-			wiki => toast(wiki.name + ' updated', 'success'),
-			err => toast(err, 'error')
-		)
-	}
+	const [getWikiMembers] = useLazyQuery(GET_MEMBERS, {
+		onCompleted: data => {
+			if(!data.wikiMembers?.members) throw new Error('Something went wrong!')
+			setMembers(data.wikiMembers?.members)
+			setMembersReference(data.wikiMembers?.members)
+		},
+		onError: err => {
+			toast(err.message, 'error')
+		}
+	})
 
-	const handleDeleteWiki = () => {
-		wikiAPI.remove(wiki._id,
-			wiki => {
-				navigate('/home')
-				toast(wiki.name + ' was deleted', 'success')
-			},
-			err => toast(err, 'error')
-		)
+	const [deleteWiki] = useMutation(REMOVE_WIKI, {
+		onCompleted: () => {
+			navigate('/home')
+			toast('Wiki was deleted successfully.', 'success')
+		},
+		onError: err => {
+			toast(err.message, 'error')
+			setDeleteConfirmationVisible(false)
+		}
+	})
+
+	const [updateWiki] = useMutation(UPDATE_WIKI, {
+		onCompleted: () => {
+			toast('Wiki updated.', 'success')
+		},
+		onError: err => {
+			toast(err.message, 'error')
+		}
+	})
+
+	const submitEdit = (wiki: any) => {
+		updateWiki({variables: { wiki:  {
+			_id: wiki._id,
+			description: wiki.description,
+			img: wiki.img,
+			name: wiki.name,
+			owner: wiki.owner
+		}}})
 	}
 
 	const handleChangeImg = (filename: string) => {
-		wikiAPI.update(wiki._id, { ...wiki, img: filename },
-			() => toast('Cover image updated', 'success'),
-			err => toast(err, 'error')
-		)
+		submitEdit({ ...wiki, img: filename })
 	}
 
-	const handleEditMembers = () => {
-		wikiAPI.updateMembers(wiki._id, members.map(member => member._id),
-			() => {
-				setMembersReference(members)
-				toast('Changes Applied', 'success')
-			},
-			err => toast(err, 'error')
-		)
-	}
+	const [updateMembers] = useMutation(UPDATE_MEMBERS, {
+		onCompleted: () => {
+			toast('Wiki updated.', 'success')
+		},
+		onError: err => {
+			toast(err.message, 'error')
+		}
+	})
 
 	return (
-		<LoadContextProvider loading={loading} errored={error != ''}>
+		<LoadContextProvider loading={wikiRequest.loading} errored={wikiRequest.error != undefined}>
 			<Row className={CSSstyle.topRow}>
 				<h1>Manage Wiki</h1>
 				<Button
@@ -228,7 +285,7 @@ export function WikiSettings() {
 												text={'Save Changes'}
 												color='var(--primary)'
 												icon={<Floppy />}
-												onClick={handleEditMembers}
+												onClick={() => updateMembers({variables: {_id: wiki._id!, members}})}
 											/>
 										</>
 									)}
@@ -287,7 +344,7 @@ export function WikiSettings() {
 						prompt={`Are you sure you want to delete the wiki "${wikiname}"`}
 						text='Deleting a wiki will permanently remove all content associated with it, i.e. its pages, page history, description and cover image. This is an irreversible action.'
 						onCancel={() => setDeleteConfirmationVisible(false)}
-						onConfirm={handleDeleteWiki}
+						onConfirm={() => deleteWiki({variables: {_id: wiki._id!}})}
 						visible={deleteConfirmationVisible}
 						confirmText={`Delete "${wikiname}"`}
 					/>
