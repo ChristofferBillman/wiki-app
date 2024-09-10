@@ -8,81 +8,104 @@ import mongoose, { Types } from 'mongoose'
 
 
 interface WikiByNameArgs {
-    name: string
+	name: string
 }
 const wikisByName = WikiTC.schemaComposer.createResolver<unknown, WikiByNameArgs>({
-    name: 'wikiById',
-    kind: 'query',
-    args: {
-        name: 'String!'
-    },
-    type: `type WikiByNamePayload {
+	name: 'wikiById',
+	kind: 'query',
+	args: {
+		name: 'String!'
+	},
+	type: `type WikiByNamePayload {
         wikis: [Wiki!]!
     }`,
-    resolve: async ({ context, args }) => {
-        Authorization.assertIsLoggedIn(context)
-        const wikis = await Wiki.find({ _id: { $in: context.user.wikis }, name: args.name })
-        return { wikis }
-    }
+	resolve: async ({ context, args }) => {
+		Authorization.assertIsLoggedIn(context)
+		const wikis = await Wiki.find({ _id: { $in: context.user.wikis }, name: args.name })
+		return { wikis }
+	}
 })
 
 const myWikis = WikiTC.schemaComposer.createResolver<unknown, {}>({
-    name: 'myWikis',
-    kind: 'query',
-    type: `type MyWikiPayload {
+	name: 'myWikis',
+	kind: 'query',
+	type: `type MyWikiPayload {
         wikis: [Wiki!]!
     }`,
-    resolve: async ({ context }) => {
-        Authorization.assertIsLoggedIn(context)
-        const wikis = await Wiki.find({ _id: { $in: context.user.wikis } })
-        return { wikis }
-    }
+	resolve: async ({ context }) => {
+		Authorization.assertIsLoggedIn(context)
+		const wikis = await Wiki.find({ _id: { $in: context.user.wikis } })
+		return { wikis }
+	}
 })
 
 interface WikiByIdArgs {
-    _id: string
+	_id: string
 }
 const wikiById = WikiTC.schemaComposer.createResolver<unknown, WikiByIdArgs>({
-    name: 'wikiById',
-    kind: 'query',
-    args: {
-        _id: 'String!'
-    },
-    type: `type WikiByIdPayload {
+	name: 'wikiById',
+	kind: 'query',
+	args: {
+		_id: 'String!'
+	},
+	type: `type WikiByIdPayload {
         wiki: Wiki
     }`,
-    resolve: async ({ context, args }) => {
-        Authorization.assertIsLoggedIn(context)
-        const wiki = await Wiki.findById(args._id)
-        return { wiki }
-    }
+	resolve: async ({ context, args }) => {
+		Authorization.assertIsLoggedIn(context)
+		const wiki = await Wiki.findById(args._id)
+		return { wiki }
+	}
+})
+
+interface WikiMembersArgs {
+	_id: string
+}
+const wikiMembers = WikiTC.schemaComposer.createResolver<unknown, WikiMembersArgs>({
+	name: 'wikiMembers',
+	kind: 'query',
+	args: {
+		_id: 'String!',
+	},
+	type: `type WikiMembersPayload {
+        members: [User]!
+    }`,
+	resolve: async ({ args, context }) => {
+		Authorization.assertIsLoggedIn(context)
+		Authorization.assertIsWikiMember(context, args._id)
+
+		const members = await User.find({ wikis: { $in: [args._id] } })
+
+		return { members }
+	}
 })
 
 interface CreateWikiArgs {
-    description: string
-    img: string
-    name: string
-    members: string[]
+	description: string
+	img: string
+	name: string
+	members: string[]
 }
 const createWiki = WikiTC.schemaComposer.createResolver<unknown, CreateWikiArgs>({
-    name: 'createWiki',
-    kind: 'mutation',
-    args: {
-        description: 'String!',
-        img: 'String!',
-        name: 'String!',
-        members: '[String!]!'
-    },
-    type: `type CreateWikiPayload {
+	name: 'createWiki',
+	kind: 'mutation',
+	args: {
+		description: 'String!',
+		img: 'String!',
+		name: 'String!',
+		members: '[String!]!'
+	},
+	type: `type CreateWikiPayload {
         wiki: Wiki
     }`,
-    resolve: async ({ args, context }) => {
+	resolve: async ({ args, context }) => {
 		Authorization.assertIsLoggedIn(context)
 
 		const { description, img, name, members } = args
 
 		pushIfAbsent(members, context.user._id)
 
+		console.log(context.user._id)
 		const newWiki: IWiki = new Wiki({
 			description,
 			img,
@@ -96,162 +119,153 @@ const createWiki = WikiTC.schemaComposer.createResolver<unknown, CreateWikiArgs>
 		await updateWikiMembers(members, wiki._id)
 
 		return { wiki }
-    }
+	}
 })
 
-interface UpdateWikiArgs {
-    _id: string
-    description: string
-    img: string
-    name: string
-    owner: string
-}
-const updateWiki = WikiTC.schemaComposer.createResolver<unknown, UpdateWikiArgs>({
-    name: 'updateWiki',
-    kind: 'mutation',
-    args: {
-        _id: 'String!',
-        description: 'String',
-        img: 'String',
-        name: 'String',
-        owner: 'String'
-    },
-    type: `type UpdateWikiPayload {
+const UpdateWikiInput = WikiTC.schemaComposer.createInputTC({
+	name: 'UpdateWikiInput',
+	fields: {
+		_id: 'String!',
+		description: 'String',
+		img: 'String',
+		name: 'String',
+		owner: 'String',
+	},
+});
+const updateWiki = WikiTC.schemaComposer.createResolver<unknown, { input: { _id: string } & Partial<IWiki> }>({
+	name: 'updateWiki',
+	kind: 'mutation',
+	args: {
+		input: 'UpdateWikiInput!'
+	},
+	type: `type UpdateWikiPayload {
         wiki: Wiki
     }`,
-    resolve: async ({ args, context }) => {
-        Authorization.assertIsLoggedIn(context)
+	resolve: async ({ args, context }) => {
+		Authorization.assertIsLoggedIn(context)
 
-        const { description, img, name, owner, _id } = args
-        Authorization.assertIsWikiOwner(context, _id)
+		const { description, img, name, owner, _id } = args.input
+		await Authorization.assertIsWikiOwner(context, _id)
 
-        const updatedWiki: IWiki | null = await Wiki.findByIdAndUpdate(
-            _id,
-            { description, img, name, owner },
-            { new: true }
-        )
-        if (!updateWiki) throw new Error('No wiki with that ID was found.')
+		const updatedWiki: IWiki | null = await Wiki.findByIdAndUpdate(
+			_id,
+			{ description, img, name, owner },
+			{ new: true }
+		)
+		if (!updateWiki) throw new Error('No wiki with that ID was found.')
 
-        return { wiki: updatedWiki }
-    }
+		return { wiki: updatedWiki }
+	}
 })
 
 interface UpdateWikiMembersArgs {
-    _id: string
-    members: string[]
+	_id: string
+	members: string[]
 }
 const updateWikiMembersResolver = WikiTC.schemaComposer.createResolver<unknown, UpdateWikiMembersArgs>({
-    name: 'updateWiki',
-    kind: 'mutation',
-    args: {
-        _id: 'String!',
-        members: '[String]!'
-    },
-    type: `type WikiMembersPayload {
+	name: 'updateWikiMembers',
+	kind: 'mutation',
+	args: {
+		_id: 'String!',
+		members: '[String]!'
+	},
+	type: `type WikiMembersPayload {
         members: [User]!
     }`,
-    resolve: async ({ args, context }) => {
-        Authorization.assertIsLoggedIn(context)
-        Authorization.assertIsWikiOwner(context, args._id)
+	resolve: async ({ args, context }) => {
+		Authorization.assertIsLoggedIn(context)
+		await Authorization.assertIsWikiOwner(context, args._id)
 
-        const newMembersList = await updateWikiMembers(args.members, args._id)
+		if(!args.members.includes(context.user._id)) {
+			throw new Error('Cannot remove yourself from a wiki.')
+		}
 
-        return { members: newMembersList }
-    }
+		const newMembersList = await updateWikiMembers(args.members, args._id)
+
+		return { members: newMembersList }
+	}
 })
 
 interface DeleteWikiArgs {
-    _id: string
+	_id: string
 }
 const removeWiki = WikiTC.schemaComposer.createResolver<unknown, DeleteWikiArgs>({
-    name: 'removeWiki',
-    kind: 'mutation',
-    args: {
-        _id: 'String!'
-    },
-    type: `type DeleteWikiPayload {
+	name: 'removeWiki',
+	kind: 'mutation',
+	args: {
+		_id: 'String!'
+	},
+	type: `type DeleteWikiPayload {
         wiki: Wiki
     }`,
-    resolve: async ({ context, args }) => {
-        const session = await mongoose.startSession()
-        session.startTransaction()
+	resolve: async ({ context, args }) => {
+		Authorization.assertIsLoggedIn(context)
+		await Authorization.assertIsWikiOwner(context, args._id)
 
-        try {
-            Authorization.assertIsLoggedIn(context)
-            Authorization.assertIsWikiOwner(context, args._id)
+		const wiki = await Wiki.findByIdAndDelete(args._id)
 
-            const wiki = await Wiki.findByIdAndDelete(args._id, { session })
+		await updateWikiMembers([], args._id)
 
-            await updateWikiMembers([], args._id, { session })
+		const associatedPages = await Page.find({ wikiId: args._id })
+		const associatedPagesIds = associatedPages.map(page => page._id)
 
-            const associatedPages = await Page.find({ wikiId: args._id }, null, { session })
-            const associatedPagesIds = associatedPages.map(page => page._id)
+		await Page.deleteMany({ _id: { $in: associatedPagesIds } })
 
-            await Page.deleteMany({ _id: { $in: associatedPagesIds } }, { session })
+		await PageRecord.deleteMany({ page: { $in: associatedPagesIds } })
 
-            await PageRecord.deleteMany({ page: { $in: associatedPagesIds } }, { session })
-
-            await session.commitTransaction()
-            session.endSession()
-
-            return { wiki }
-
-        } catch (err) {
-            await session.abortTransaction()
-            session.endSession()
-            throw err
-        }
-    }
+		return { wiki }
+	}
 })
 
 const WikiQuery = {
-    wikisByName,
-    myWikis,
-    wikiById
+	wikisByName,
+	myWikis,
+	wikiById,
+	wikiMembers
 }
 
 const WikiMutation = {
-    createWiki,
-    updateWiki,
-    updateWikiMembers: updateWikiMembersResolver,
-    removeWiki,
+	createWiki,
+	updateWiki,
+	updateWikiMembers: updateWikiMembersResolver,
+	removeWiki,
 }
 
 export { WikiQuery, WikiMutation }
 
 export function pushIfAbsent(arr: unknown[], el: unknown) {
-    if (!arr.includes(el)) {
-        arr.push(el)
-    }
+	if (!arr.includes(el)) {
+		arr.push(el)
+	}
 }
 
 async function updateWikiMembers(userIds, wikiId, session = null) {
-    const oldMembersList = await User.find({ wikis: { $in: [wikiId] } }).session(session)
+	const oldMembersList = await User.find({ wikis: { $in: [wikiId] } }).session(session)
 
-    const newMembersList = await User.find({ _id: { $in: userIds } }).session(session)
+	const newMembersList = await User.find({ _id: { $in: userIds } }).session(session)
 
-    const toBeRemoved = oldMembersList.filter(oldMember =>
-        !newMembersList.some(newMember => newMember._id.toString() === oldMember._id.toString())
-    )
+	const toBeRemoved = oldMembersList.filter(oldMember =>
+		!newMembersList.some(newMember => newMember._id.toString() === oldMember._id.toString())
+	)
 
-    const toBeAdded = newMembersList.filter(newMember =>
-        !oldMembersList.some(oldMember => oldMember._id.toString() === newMember._id.toString())
-    )
+	const toBeAdded = newMembersList.filter(newMember =>
+		!oldMembersList.some(oldMember => oldMember._id.toString() === newMember._id.toString())
+	)
 
-    await User.updateMany(
-        { _id: { $in: toBeRemoved.map(user => user._id) } },
-        { $pull: { wikis: wikiId } },
-        { session }
-    )
+	await User.updateMany(
+		{ _id: { $in: toBeRemoved.map(user => user._id) } },
+		{ $pull: { wikis: wikiId } },
+		{ session }
+	)
 
-    await User.updateMany(
-        { _id: { $in: toBeAdded.map(user => user._id) } },
-        { $addToSet: { wikis: wikiId } },
-        { session }  // Include the session if provided
-    )
+	await User.updateMany(
+		{ _id: { $in: toBeAdded.map(user => user._id) } },
+		{ $addToSet: { wikis: wikiId } },
+		{ session }  // Include the session if provided
+	)
 
-    return newMembersList.map(member => {
-        removePassword(member)
-        return member
-    })
+	return newMembersList.map(member => {
+		removePassword(member)
+		return member
+	})
 }
